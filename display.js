@@ -13,4 +13,5 @@ function type(event) {
   let char = event.which;
   let s = String.fromCharCode(char);
   log(s);
+  document.getElementById('main_text').innerHTML += s
 }
