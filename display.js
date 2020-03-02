@@ -13,5 +13,6 @@ function type(event) {
   let char = event.which;
   let s = String.fromCharCode(char);
   log(s);
+  // add if statements to check if it's a backspace (if it is delete a char)
   document.getElementById('main_text').innerHTML += s
 }
