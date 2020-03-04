@@ -48,7 +48,10 @@ function compare(counter)
   if (correct_text[correctTextCounter] == input_text[counter])
   {
     log("T");
-    document.getElementById('in').value = ''
+    if (input_text[counter] == " ")
+    {
+      document.getElementById('in').value = ''
+    }
     var cText = document.getElementById('correct_text');
     cText.style.color = 'blue';
   }
