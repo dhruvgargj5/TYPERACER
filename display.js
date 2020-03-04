@@ -32,7 +32,7 @@ function type(event) {
   let s = String.fromCharCode(char);
   //log(s);
   // add if statements to check if it's a backspace (if it is delete a char)
-  document.getElementById('main_text').innerHTML += s;
+  document.getElementById('input_text').innerHTML += s;
   compare(counter);
   counter++;
   correctTextCounter++;
@@ -41,7 +41,7 @@ function type(event) {
 function compare(counter)
 {
   var correct_text = document.getElementById('correct_text').innerHTML;
-  var input_text = document.getElementById('main_text').innerHTML;
+  var input_text = document.getElementById('input_text').innerHTML;
   log ("COUNTER: " + counter);
   log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
   log ("INPUT TEXT: " + input_text[counter]);
