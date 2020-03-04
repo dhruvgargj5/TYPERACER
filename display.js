@@ -20,9 +20,9 @@ function backspace(event)
   if (evtKcode == 8)
   {
     log("FOUND A BACKSPACE");
+    //counter--;
   }
 }
-
 function type(event) {
   // let target = event.currentTarget;
   // let tag = target.tagName;
@@ -42,9 +42,9 @@ function compare(counter)
 {
   var correct_text = document.getElementById('correct_text').innerHTML;
   var input_text = document.getElementById('input_text').innerHTML;
-  // log ("COUNTER: " + counter);
-  // log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
-  // log ("INPUT TEXT: " + input_text[counter]);
+  log ("COUNTER: " + counter);
+  log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
+  log ("INPUT TEXT: " + input_text[counter]);
   if (correct_text[correctTextCounter] == input_text[counter])
   {
     log("T");
@@ -61,4 +61,15 @@ function compare(counter)
       var cText = document.getElementById('correct_text');
       cText.style.color = 'red';
   }
+}
+
+function highlight(){
+  var instance = new Mark(document.getElementById('correct_text'));
+  //highlights correct words
+  instance.markRanges({
+    start : correctTextCounter,
+    length : 1
+  });
+
+  //highlights incorrect
 }
