@@ -65,7 +65,7 @@ function compare(counter)
       log("F");
       correctTextCounter--;
       incorrectCounter++;
-    //  incorrectHighlight();
+      incorrectHighlight();
   }
 }
 
