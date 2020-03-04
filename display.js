@@ -1,7 +1,7 @@
 let log = console.log;
 var counter = 0;
 var correctTextCounter = 0;
-var inputTextCounter = 0;
+var incorrectCounter = 0;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -21,7 +21,7 @@ function backspace(event)
   if (evtKcode == 8)
   {
     log("FOUND A BACKSPACE");
-    inputTextCounter--;
+
   }
 }
 function type(event) {
@@ -36,7 +36,6 @@ function type(event) {
   document.getElementById('input_text').innerHTML += s;
   compare(counter);
   counter++;
-  inputTextCounter++;
   correctTextCounter++;
 }
 
@@ -48,7 +47,6 @@ function compare(counter)
   log ("COUNTER: " + counter);
   log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
   log ("INPUT TEXT: " + input_text[counter]);
-  log ("INPUT TEXT COUNTER: " + inputTextCounter);
   log ("CORRECT TEXT COUNTER: " + correctTextCounter);
   if (correct_text[correctTextCounter] == input_text[counter])
   {
@@ -61,10 +59,12 @@ function compare(counter)
     // var cText = document.getElementById('correct_text');
     // cText.style.color = 'blue';
     correctHighlight();
+    incorrectCounter = 0;
   }
   else {
       log("F");
       correctTextCounter--;
+      incorrectCounter++;
     //  incorrectHighlight();
   }
 }
@@ -85,6 +85,6 @@ function incorrectHighlight()
   //highlights correct words
   instance.markRanges([{
     start : correctTextCounter,
-    length : inputTextCounter
-  }]);
+    length : incorrectCounter + 1
+  }], {className: 'markincorrect'});
 }
