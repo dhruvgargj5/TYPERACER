@@ -17,10 +17,13 @@ function init() {
 function backspace(event)
 {
   var evtKcode = event.keyCode;
-  if (evtKcode == 8)
-  {
+  let input = document.getElementById('input_text').innerHTML;
+  if (evtKcode == 8) {
     log("FOUND A BACKSPACE");
+    log(document.getElementById('input_text').innerHTML.substring(0, input.length - 1));
+    document.getElementById('input_text').innerHTML = document.getElementById('input_text').innerHTML.substring(0, input.length - 1);
   }
+
 }
 
 function type(event) {
