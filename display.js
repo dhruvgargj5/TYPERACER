@@ -20,15 +20,16 @@ function backspace(event)
   if (evtKcode == 8)
   {
     log("FOUND A BACKSPACE");
-      correctTextCounter--;
+    //  correctTextCounter--;
   }
 }
 
 function type(event) {
-  let target = event.currentTarget;
-  let tag = target.tagName;
+  // let target = event.currentTarget;
+  // let tag = target.tagName;
+  //^^what doe these do lol
   let char = event.which;
-  log("CHAR: " + char);
+//  log("CHAR: " + char);
   let s = String.fromCharCode(char);
   //log(s);
   // add if statements to check if it's a backspace (if it is delete a char)
@@ -42,15 +43,15 @@ function compare(counter)
 {
   var correct_text = document.getElementById('correct_text').innerHTML;
   var input_text = document.getElementById('input_text').innerHTML;
-  log ("COUNTER: " + counter);
-  log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
-  log ("INPUT TEXT: " + input_text[counter]);
+  // log ("COUNTER: " + counter);
+  // log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
+  // log ("INPUT TEXT: " + input_text[counter]);
   if (correct_text[correctTextCounter] == input_text[counter])
   {
     log("T");
   }
   else {
-
       log("F");
+      correctTextCounter--;
   }
 }
