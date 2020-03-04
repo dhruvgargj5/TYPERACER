@@ -5,13 +5,19 @@ document.addEventListener("DOMContentLoaded", init);
 
 function init() {
   let txt = document.getElementById('in');
-  txt.addEventListener('keydown', type);
+  txt.addEventListener('keypress', type);
+  /*
+    used to be keydown. making it keypress fixes shift and case problem.
+    see Google Doc for explanation
+  */
+
 }
 
 function type(event) {
   let target = event.currentTarget;
   let tag = target.tagName;
-  let char = event.which;   //subtract ascii value to get to lowercase
+  let char = event.which;
+  log("CHAR: " + char)  //subtract ascii value to get to lowercase
   let s = String.fromCharCode(char);
   //log(s);
   // add if statements to check if it's a backspace (if it is delete a char)
