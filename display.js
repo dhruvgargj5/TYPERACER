@@ -30,7 +30,7 @@ function type(event) {
   let char = event.which;
 //  log("CHAR: " + char);
   let s = String.fromCharCode(char);
-  log(s);
+  //log(s);
   // add if statements to check if it's a backspace (if it is delete a char)
   document.getElementById('input_text').innerHTML += s;
   compare(counter);
