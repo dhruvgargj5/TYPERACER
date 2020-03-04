@@ -20,7 +20,6 @@ function backspace(event)
   if (evtKcode == 8)
   {
     log("FOUND A BACKSPACE");
-    //  correctTextCounter--;
   }
 }
 
@@ -49,6 +48,7 @@ function compare(counter)
   if (correct_text[correctTextCounter] == input_text[counter])
   {
     log("T");
+    document.getElementById('in').value = ''
   }
   else {
       log("F");
