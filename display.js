@@ -49,9 +49,13 @@ function compare(counter)
   {
     log("T");
     document.getElementById('in').value = ''
+    var cText = document.getElementById('correct_text');
+    cText.style.color = 'blue';
   }
   else {
       log("F");
       correctTextCounter--;
+      var cText = document.getElementById('correct_text');
+      cText.style.color = 'red';
   }
 }
