@@ -20,6 +20,7 @@ function backspace(event)
   var evtKcode = event.keyCode;
   if (evtKcode == 8)
   {
+    //GET RID OF RED HIGHLIGHTED CHARS
     log("FOUND A BACKSPACE");
 
   }
