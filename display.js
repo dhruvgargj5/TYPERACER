@@ -5,6 +5,9 @@ var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
 var startedTimer = false;
+var correct_text = "I take a look"
+var isWin = false;
+
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -29,11 +32,20 @@ function backspace(event)
     incorrectHighlight();
     userCounter--;
   }
+
+  if (evtKcode == 13)
+  {
+    log ("ENTER");
+    if (correctCounter == correct_text.length)
+    {
+      log("WIN");
+      isWin = true;
+    }
+  }
 }
 function type(event) {
   let char = event.which;
   let s = String.fromCharCode(char);
-  //log(s);
 
   input_text += s;
   compare(counter);
@@ -49,12 +61,11 @@ function type(event) {
 function compare(counter)
 {
 
-  var correct_text = "I take a look at my enormous penis And my troubles start a-meltin' away (Ba-doo-bop-bop) I take a look at my enormous penis And the happy times are coming to stay I gotta sing and I dance when I glance in my pants";
-  log ("COUNTER: " + counter);
-  log ("CORRECT TEXT: " + correct_text[correctCounter]);
-  log ("INPUT TEXT: " + input_text[counter]);
-  log ("CORRECT TEXT COUNTER: " + correctCounter);
-  log ("INCORRECT COUNTER: " + incorrectCounter);
+//  log ("CORRECT TEXT LENGTH: " + correct_text.length)
+  // log ("CORRECT TEXT: " + correct_text[correctCounter]);
+  // log ("INPUT TEXT: " + input_text[counter]);
+  //log ("CORRECT TEXT COUNTER: " + correctCounter);
+  // log ("INCORRECT COUNTER: " + incorrectCounter);
 
   //incorrectCounter <= 0 means you can abuse the backspace
   if (correct_text[correctCounter] == input_text[counter] && incorrectCounter <= 0)
