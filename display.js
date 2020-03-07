@@ -4,6 +4,7 @@ var userCounter = 0;
 var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
+var startedTimer = false;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -38,6 +39,11 @@ function type(event) {
   compare(counter);
   counter++;
   userCounter++;
+  if (!startedTimer)
+  {
+    startTimer();
+    startedTimer = true;
+  }
 }
 
 function compare(counter)
@@ -59,8 +65,6 @@ function compare(counter)
     {
       document.getElementById('in').value = ''
     }
-    // var cText = document.getElementById('correct_text');
-    // cText.style.color = 'blue';
     correctHighlight();
     correctCounter++;
     incorrectCounter = 0;
@@ -147,8 +151,6 @@ document.getElementById("app").innerHTML = `
   )}</span>
 </div>
 `;
-
-startTimer();
 
 function onTimesUp() {
   clearInterval(timerInterval);
