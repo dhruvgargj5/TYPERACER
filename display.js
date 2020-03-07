@@ -5,7 +5,7 @@ var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
 var startedTimer = false;
-var correct_text = "I take a look at my enormous penis And my troubles start a-meltin' away (Ba-doo-bop-bop) I take a look at my enormous penis And the happy times are coming to stay I gotta sing and I dance when I glance in my pants"
+var correct_text = "I threw a wish in the well. Don't ask me, I'll never tell. I looked to you as it fell. And now you're in my way. I trade my soul for a wish. Pennies and dimes for a kiss. I wasn't looking for this. But now you're in my way"
 var isWin = false;
 
 
