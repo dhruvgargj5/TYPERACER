@@ -3,6 +3,7 @@ var counter = 0;
 var userCounter = 0;
 var correctCounter = 0;
 var incorrectCounter = 0;
+var incorrectvalue = -1;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -23,6 +24,8 @@ function backspace(event)
   {
     //GET RID OF RED HIGHLIGHTED CHARS
     log("FOUND A BACKSPACE");
+    incorrectHighlight(incorrectvalue);
+    incorrectvalue--;
     userCounter--;
   }
 }
@@ -45,6 +48,7 @@ function compare(counter)
   log ("CORRECT TEXT: " + correct_text[correctCounter]);
   log ("INPUT TEXT: " + input_text[counter]);
   log ("CORRECT TEXT COUNTER: " + correctCounter);
+  log ("INCORRECT COUNTER: " + incorrectCounter);
   if (correct_text[correctCounter] == input_text[counter])
   {
     log("T");
@@ -58,6 +62,7 @@ function compare(counter)
     correctHighlight();
     correctCounter++;
     incorrectCounter = 0;
+    incorrectvalue = -1;
   }
   else {
       log("F");
@@ -66,22 +71,24 @@ function compare(counter)
   }
 }
 
-function correctHighlight(){
+function correctHighlight(value=0){
   var instance = new Mark(document.getElementById('correct_text'));
   //highlights correct words
   instance.unmark();
   instance.markRanges([{
     start : 0,
-    length : correctCounter + 1
+    length : correctCounter + 1 + value
   }]);
 }
 
-function incorrectHighlight()
+function incorrectHighlight(value=0)
 {
   var instance = new Mark(document.getElementById('correct_text'));
   //highlights correct words
+  instance.unmark();
+  correctHighlight(-1);
   instance.markRanges([{
     start : correctCounter,
-    length : incorrectCounter
+    length : incorrectCounter + value
   }], {className: 'markincorrect'});
 }

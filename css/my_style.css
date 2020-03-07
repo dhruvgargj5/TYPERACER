@@ -1,7 +1,11 @@
 mark{
-    background: green;
+    background: white;
+    color: green;
+    text-decoration: underline;
 }
 
 mark.markincorrect{
-  background: red;
+    background: red;
+    opacity: .5;
+    color: black;
 }
