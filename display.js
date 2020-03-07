@@ -27,14 +27,9 @@ function backspace(event)
   }
 }
 function type(event) {
-  // let target = event.currentTarget;
-  // let tag = target.tagName;
-  //^^what doe these do lol
   let char = event.which;
-//  log("CHAR: " + char);
   let s = String.fromCharCode(char);
   //log(s);
-  // add if statements to check if it's a backspace (if it is delete a char)
   document.getElementById('input_text').innerHTML += s;
   compare(counter);
   counter++;
