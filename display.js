@@ -1,6 +1,7 @@
 let log = console.log;
 var counter = 0;
-var correctTextCounter = 0;
+var userCounter = 0;
+var correctCounter = 0;
 var incorrectCounter = 0;
 
 document.addEventListener("DOMContentLoaded", init);
@@ -22,7 +23,7 @@ function backspace(event)
   {
     //GET RID OF RED HIGHLIGHTED CHARS
     log("FOUND A BACKSPACE");
-
+    userCounter--;
   }
 }
 function type(event) {
@@ -37,7 +38,7 @@ function type(event) {
   document.getElementById('input_text').innerHTML += s;
   compare(counter);
   counter++;
-  correctTextCounter++;
+  userCounter++;
 }
 
 function compare(counter)
@@ -46,10 +47,10 @@ function compare(counter)
   var correct_text = "OOH WHOA OOH whoa, ooh whoa You know you love me, I know you care Just shout whenever and I'll be there You are my love, you are my heart And we will never, ever, ever be apart";
 //log ("ALL OF CORRECT TEXT: " + correct_text);
   log ("COUNTER: " + counter);
-  log ("CORRECT TEXT: " + correct_text[correctTextCounter]);
+  log ("CORRECT TEXT: " + correct_text[correctCounter]);
   log ("INPUT TEXT: " + input_text[counter]);
-  log ("CORRECT TEXT COUNTER: " + correctTextCounter);
-  if (correct_text[correctTextCounter] == input_text[counter])
+  log ("CORRECT TEXT COUNTER: " + correctCounter);
+  if (correct_text[correctCounter] == input_text[counter])
   {
     log("T");
     //clears input space after every word
@@ -60,11 +61,11 @@ function compare(counter)
     // var cText = document.getElementById('correct_text');
     // cText.style.color = 'blue';
     correctHighlight();
+    correctCounter++;
     incorrectCounter = 0;
   }
   else {
       log("F");
-      correctTextCounter--;
       incorrectCounter++;
       incorrectHighlight();
   }
@@ -76,7 +77,7 @@ function correctHighlight(){
   instance.unmark();
   instance.markRanges([{
     start : 0,
-    length : correctTextCounter + 1
+    length : correctCounter + 1
   }]);
 }
 
@@ -85,7 +86,7 @@ function incorrectHighlight()
   var instance = new Mark(document.getElementById('correct_text'));
   //highlights correct words
   instance.markRanges([{
-    start : correctTextCounter,
+    start : correctCounter + 1,
     length : incorrectCounter + 1
   }], {className: 'markincorrect'});
 }
