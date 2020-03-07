@@ -177,7 +177,7 @@ function startTimer() {
     setCircleDasharray();
     setRemainingPathColor(timeLeft);
 
-    if (timeLeft === 0) {
+    if (timeLeft === 0 || isWin == true) {
       onTimesUp();
     }
   }, 1000);
