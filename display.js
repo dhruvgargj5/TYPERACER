@@ -5,7 +5,7 @@ var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
 var startedTimer = false;
-var correct_text = "I take a look"
+var correct_text = "I take a look at my enormous penis And my troubles start a-meltin' away (Ba-doo-bop-bop) I take a look at my enormous penis And the happy times are coming to stay I gotta sing and I dance when I glance in my pants"
 var isWin = false;
 
 
