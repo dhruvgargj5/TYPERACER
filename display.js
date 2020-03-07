@@ -48,14 +48,14 @@ function type(event) {
 
 function compare(counter)
 {
-//  var input_text = document.getElementById('input_text').innerHTML;
-  var correct_text = "OOH WHOA OOH whoa, ooh whoa You know you love me, I know you care Just shout whenever and I'll be there You are my love, you are my heart And we will never, ever, ever be apart";
-//log ("ALL OF CORRECT TEXT: " + correct_text);
+
+  var correct_text = "I take a look at my enormous penis And my troubles start a-meltin' away (Ba-doo-bop-bop) I take a look at my enormous penis And the happy times are coming to stay I gotta sing and I dance when I glance in my pants";
   log ("COUNTER: " + counter);
   log ("CORRECT TEXT: " + correct_text[correctCounter]);
   log ("INPUT TEXT: " + input_text[counter]);
   log ("CORRECT TEXT COUNTER: " + correctCounter);
   log ("INCORRECT COUNTER: " + incorrectCounter);
+
   //incorrectCounter <= 0 means you can abuse the backspace
   if (correct_text[correctCounter] == input_text[counter] && incorrectCounter <= 0)
   {
