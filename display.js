@@ -81,7 +81,7 @@ function incorrectHighlight()
   var instance = new Mark(document.getElementById('correct_text'));
   //highlights correct words
   instance.markRanges([{
-    start : correctCounter + 1,
-    length : incorrectCounter + 1
+    start : correctCounter,
+    length : incorrectCounter
   }], {className: 'markincorrect'});
 }
