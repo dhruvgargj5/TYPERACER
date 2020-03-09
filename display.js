@@ -112,7 +112,18 @@ function incorrectHighlight()
   }], {className: 'markincorrect'});
 }
 
-
+function print_wpm() {
+  let words = correctCounter / 5;
+  let time = TIME_LIMIT / 60;
+  let wpm = words / time;
+  if (isOver || isWin) {
+    var wpm_element = document.createElement("p");
+    var wpm_text = document.createTextNode("wpm: " + wpm);
+    wpm_element.appendChild(wpm_text);
+    var element = document.getElementById("bottom");
+    element.appendChild(wpm_element);
+  }
+}
 
 // Credit: Mateusz Rybczonec
 
@@ -184,6 +195,7 @@ function startTimer() {
     }
     if (isOver || isWin) {
       document.getElementById("in").readOnly = true;
+      print_wpm();
       onTimesUp();
     }
   }, 1000);
