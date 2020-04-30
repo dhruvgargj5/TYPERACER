@@ -1,0 +1,23 @@
+{
+  "name": "typeracer",
+  "version": "1.0.0",
+  "description": "You can use the [editor on GitHub](https://github.com/dhruvgargj5/TYPERACER/edit/master/README.md) to maintain and preview the content for your website in Markdown files.",
+  "main": "display.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhruvgargj5/TYPERACER.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhruvgargj5/TYPERACER/issues"
+  },
+  "homepage": "https://github.com/dhruvgargj5/TYPERACER#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
