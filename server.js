@@ -33,8 +33,7 @@ var players = {};
 io.on('connection', function(socket) {
   socket.on('new player', function() {
     players[socket.id] = {
-      x: 300,
-      y: 300
+      player_progress: 0
     };
   });
   socket.on('movement', function(data) {

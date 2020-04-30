@@ -47,17 +47,17 @@ setInterval(function() {
   socket.emit('movement', movement);
 }, 1000 / 60);
 
-var canvas = document.getElementById('canvas');
-canvas.width = 800;
-canvas.height = 600;
-var context = canvas.getContext('2d');
+socket.on('connection', function(players) {
+  var new_bar = document.createElement("PROGRESS")
+  new_bar.setAttribute("value", player_progress)
+  new_bar.setAttribute("max", 100)
+  var progress_bars = document.getElementById("progress_bars")
+  progress_bars.appendChild(new_bar)
+});
 socket.on('state', function(players) {
-  context.clearRect(0, 0, 800, 600);
-  context.fillStyle = 'green';
   for (var id in players) {
-    var player = players[id];
-    context.beginPath();
-    context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-    context.fill();
+
   }
+  console.log("here")
+
 });
