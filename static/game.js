@@ -11,6 +11,18 @@ setInterval(function() {
 
 
 //RECEIVE FROM SERVER: CREATES ALL PLAYER'S PROG bars
+
+//Runs when the SERVER emits "new_connection" and the players object
+//This iterates through the player's object and, via player ID, creates a
+//progress bar for each player.
+//The progress bar is as follows:
+// outMostDiv -- > <div class = "col-mod-12">
+// outDiv -- >       <div class = "progress active mb-2" style = "height: 35px">
+// innerDiv -- >         <div class = "progress-bar progress-bar-striped pbar COLOR"
+//                       id = "id" role = "progressbar" style = "width: 0%;">
+//                       </div>
+//                   </div>
+//                 </div>
 socket.on('new_connection', function(players){
   console.log("a new person has connected")
   //console.log(players)
