@@ -41,7 +41,7 @@ io.on('connection', function(socket) {
     }
 
     if(allReady){
-      io.sockets.emit('gameStart')
+      io.sockets.emit('gameStart', players)
     }
   });
 });
@@ -74,5 +74,10 @@ io.on('connection', function(socket) {
     var playerID = socket.id
     players[socket.id].player_progress = 0
     io.sockets.emit('player_disconnected', playerID)
+    console.log("before ")
+    console.log(players)
+    delete players[playerID]
+    console.log("after")
+    console.log(players)
   });
 });

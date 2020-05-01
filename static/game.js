@@ -17,18 +17,31 @@ socket.on('new_connection', function(players){
   var progress_bars = document.getElementById("progress_bars")
   progress_bars.innerHTML = ""
   for (var id in players) {
-    var new_bar = document.createElement("PROGRESS")
-    console.log(id)
-    new_bar.setAttribute("id", id)
-    new_bar.setAttribute("value", 0)
-    new_bar.setAttribute("max", 100)
-    progress_bars.appendChild(new_bar)
+    // var new_bar = document.createElement("PROGRESS")
+    // console.log(id)
+    // new_bar.setAttribute("id", id)
+    // new_bar.setAttribute("value", 0)
+    // new_bar.setAttribute("max", 100)
+    // progress_bars.appendChild(new_bar)
+
+  //  bootstrap version
+    var outDiv = document.createElement("DIV")
+    outDiv.setAttribute("class", "progress active col-12")
+
+    var innerDiv = document.createElement("DIV")
+    innerDiv.setAttribute("id", id)
+    innerDiv.setAttribute("class", "progress-bar progress-bar-striped progress-bar-animated")
+    innerDiv.setAttribute("role", "progressbar")
+    innerDiv.setAttribute("style", "width: 0%;")
+    outDiv.appendChild(innerDiv)
+    progress_bars.appendChild(outDiv)
   }
 });
 
 
 //RECEIVE FROM SERVER: update ALL player's progress bars
 socket.on('state', function(players) {
+//  console.log(players)
   //console.log(players)
   for (var id in players) {
 //    console.log("id: " + id)
@@ -37,7 +50,9 @@ socket.on('state', function(players) {
       // console.log(typeof(players[id]))
       // console.log(players[id].player_progress)
       var player_progress_bar = document.getElementById(id)
-      player_progress_bar.setAttribute("value", players[id].player_progress)
+      // player_progress_bar.setAttribute("value", players[id].player_progress)
+      var style = "width: " + String(players[id].player_progress) + "%"
+       player_progress_bar.setAttribute("style", style)
     }
     // console.log("players: ")
     // console.log(players)
@@ -49,6 +64,11 @@ socket.on('state', function(players) {
 socket.on('player_disconnected',function(disconnectedID) {
   var toBeDeletedBar = document.getElementById(disconnectedID)
   toBeDeletedBar.remove()
+  var start = document.getElementById('start')
+  var m = document.createElement("PARAGRAPH")
+  var message = "Player: " + disconnectedID + " has disconnected"
+  m.innerHTML = message
+  start.appendChild(m)
 });
 
 //Player ready from button
@@ -65,7 +85,7 @@ socket.on("otherPlayerReady", function(message) {
 });
 
 
-socket.on("gameStart", function (){
+socket.on("gameStart", function (players){
   console.log("game has started")
   startCountdown()
 });
@@ -82,7 +102,7 @@ function startCountdown(){
   // Get today's date and time
   // Find the distance between now and the count down date
   console.log("pre loopin")
-  var distance = 10000 - curr;
+  var distance = 5000 - curr;
   curr += 1000
 
 
