@@ -69,15 +69,10 @@ setInterval(function() {
 }, 1000 / 60);
 
 io.on('connection', function(socket) {
-  // other handlers ...
   socket.on('disconnect', function() {
     var playerID = socket.id
     players[socket.id].player_progress = 0
     io.sockets.emit('player_disconnected', playerID)
-    console.log("before ")
-    console.log(players)
     delete players[playerID]
-    console.log("after")
-    console.log(players)
   });
 });

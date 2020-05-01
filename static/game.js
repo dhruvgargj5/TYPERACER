@@ -30,7 +30,7 @@ socket.on('new_connection', function(players){
 
 
     var color = colors[counter]
-    var classAttribute = "progress-bar progress-bar-striped pbar" + color
+    var classAttribute = "progress-bar progress-bar-striped pbar " + color
     var innerDiv = document.createElement("DIV")
     innerDiv.setAttribute("id", id)
     innerDiv.setAttribute("class", classAttribute)
@@ -46,7 +46,6 @@ socket.on('new_connection', function(players){
 
 //RECEIVE FROM SERVER: update ALL player's progress bars
 socket.on('state', function(players) {
-//  console.log(players)
   //console.log(players)
   for (var id in players) {
 //    console.log("id: " + id)
@@ -68,10 +67,7 @@ socket.on('state', function(players) {
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 socket.on('player_disconnected',function(disconnectedID) {
   var toBeDeletedBar = document.getElementById(disconnectedID)
-  console.log("before toBeDeletedBar")
   toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
-//  toBeDeletedBar.remove()
-  console.log("after toBeDeletedBar")
   var start = document.getElementById('start')
   var m = document.createElement("PARAGRAPH")
   var message = "Player: " + disconnectedID + " has disconnected"
@@ -110,7 +106,6 @@ function startCountdown(){
 
   // Get today's date and time
   // Find the distance between now and the count down date
-  console.log("pre loopin")
   var distance = 5000 - curr;
   curr += 1000
 
@@ -126,10 +121,6 @@ function startCountdown(){
     clearInterval(x);
     document.getElementById("startTimer").innerHTML = "GAME STARTED";
     document.getElementById("in").removeAttribute('readonly')
-
   }
-  console.log("seconds: " + seconds)
-  console.log("distance: " + distance)
-  console.log("curr: " + curr)
 }, 1000);
 }
