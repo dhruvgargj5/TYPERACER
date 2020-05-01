@@ -17,7 +17,7 @@ socket.on('new_connection', function(players){
   for (var id in players) {
     var new_bar = document.createElement("PROGRESS")
     console.log(id)
-    new_bar.setAttribute("id", id)
+    //new_bar.setAttribute("id", id)
     new_bar.setAttribute("value", 0)
     new_bar.setAttribute("max", 100)
     progress_bars.appendChild(new_bar)
@@ -26,10 +26,10 @@ socket.on('new_connection', function(players){
 
 socket.on('state', function(players) {
   for (var id in players) {
-    console.log("id: " + id)
-    var player_progress_bar = document.getElementById(id)
-    console.log("players: ")
-    console.log(players)
-    player_progress_bar.setAttribute("value", players.id.player_progress)
+    // console.log("id: " + id)
+    // var player_progress_bar = document.getElementById(id)
+    // console.log("players: ")
+    // console.log(players)
+    //player_progress_bar.setAttribute("value", players.id.player_progress)
   }
 });
