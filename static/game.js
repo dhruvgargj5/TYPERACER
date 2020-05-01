@@ -1,50 +1,12 @@
 var socket = io();
-// socket.on('message', function(data) {
-//   console.log(data);
-// });
 
-var movement = {
-  up: false,
-  down: false,
-  left: false,
-  right: false
-}
-document.addEventListener('keydown', function(event) {
-  switch (event.keyCode) {
-    case 65: // A
-      movement.left = true;
-      break;
-    case 87: // W
-      movement.up = true;
-      break;
-    case 68: // D
-      movement.right = true;
-      break;
-    case 83: // S
-      movement.down = true;
-      break;
-  }
-});
-document.addEventListener('keyup', function(event) {
-  switch (event.keyCode) {
-    case 65: // A
-      movement.left = false;
-      break;
-    case 87: // W
-      movement.up = false;
-      break;
-    case 68: // D
-      movement.right = false;
-      break;
-    case 83: // S
-      movement.down = false;
-      break;
-  }
-});
 
 //socket.emit('new player');
 setInterval(function() {
-  socket.emit('movement', movement);
+  var my_progress = {
+    progress: getProgress()
+  }
+  socket.emit('type', my_progress);
 }, 1000 / 60);
 
 socket.on('new_connection', function(players){
@@ -54,7 +16,9 @@ socket.on('new_connection', function(players){
   progress_bars.innerHTML = ""
   for (var id in players) {
     var new_bar = document.createElement("PROGRESS")
-    new_bar.setAttribute("value", id.player_progress)
+    console.log(id)
+    new_bar.setAttribute("id", id)
+    new_bar.setAttribute("value", 0)
     new_bar.setAttribute("max", 100)
     progress_bars.appendChild(new_bar)
   }
@@ -62,6 +26,10 @@ socket.on('new_connection', function(players){
 
 socket.on('state', function(players) {
   for (var id in players) {
-
+    console.log("id: " + id)
+    var player_progress_bar = document.getElementById(id)
+    console.log("players: ")
+    console.log(players)
+    player_progress_bar.setAttribute("value", players.id.player_progress)
   }
 });

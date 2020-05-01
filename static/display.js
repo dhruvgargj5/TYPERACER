@@ -13,7 +13,6 @@ var isOver = false;
 var progress = 0;
 
 document.addEventListener("DOMContentLoaded", init);
-
 function init() {
   let txt = document.getElementById('in');
   txt.addEventListener('keypress', type);
@@ -65,7 +64,10 @@ function type(event) {
 
 function updateProgress() {
   progress = (correctCounter / correct_text.length) * 100;
-  document.getElementById("prog").style = "width: " + String(progress) + "%";
+}
+
+function getProgress() {
+  return progress;
 }
 
 function compare(counter)
@@ -132,6 +134,18 @@ function update_wpm() {
     document.getElementById("wpm").innerHTML = "wpm: " + String(wpm);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 // Credit: Mateusz Rybczonec
 
 const FULL_DASH_ARRAY = 283;

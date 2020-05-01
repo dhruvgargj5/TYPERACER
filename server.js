@@ -37,24 +37,10 @@ io.on('connection', function(socket) {
   console.log("Someone has connected, id: " + socket.id)
   io.sockets.emit('new_connection', players)
 
-
-
-
-
-  socket.on('movement', function(data) {
+  socket.on('type', function(data) {
     var player = players[socket.id] || {};
-    if (data.left) {
-      player.x -= 5;
-    }
-    if (data.up) {
-      player.y -= 5;
-    }
-    if (data.right) {
-      player.x += 5;
-    }
-    if (data.down) {
-      player.y += 5;
-    }
+    player.player_progress = data.progress;
+    console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
   });
 });
 
