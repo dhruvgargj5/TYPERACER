@@ -33,6 +33,7 @@ socket.on('new_connection', function(players){
     innerDiv.setAttribute("class", "progress-bar progress-bar-striped progress-bar-animated")
     innerDiv.setAttribute("role", "progressbar")
     innerDiv.setAttribute("style", "width: 0%;")
+    innerDiv.innerHTML = String(id)
     outDiv.appendChild(innerDiv)
     progress_bars.appendChild(outDiv)
   }
@@ -63,10 +64,14 @@ socket.on('state', function(players) {
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 socket.on('player_disconnected',function(disconnectedID) {
   var toBeDeletedBar = document.getElementById(disconnectedID)
-  toBeDeletedBar.remove()
+  console.log("before toBeDeletedBar")
+  toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
+//  toBeDeletedBar.remove()
+  console.log("after toBeDeletedBar")
   var start = document.getElementById('start')
   var m = document.createElement("PARAGRAPH")
   var message = "Player: " + disconnectedID + " has disconnected"
+  console.log(message)
   m.innerHTML = message
   start.appendChild(m)
 });
