@@ -67,7 +67,40 @@ socket.on("otherPlayerReady", function(message) {
 
 socket.on("gameStart", function (){
   console.log("game has started")
-  document.getElementById("in").removeAttribute('readonly')
-  console.log(document.getElementById('in').getAttribute('readonly'))
-
+  startCountdown()
 });
+
+
+function startCountdown(){
+
+  //credit W3 Schools
+
+// Update the count down every 1 second
+  var curr = 0
+  var x = setInterval(function() {
+
+  // Get today's date and time
+  // Find the distance between now and the count down date
+  console.log("pre loopin")
+  var distance = 10000 - curr;
+  curr += 1000
+
+
+  // Time calculations for days, hours, minutes and seconds
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
+  // If the count down is finished, write some text
+  //start the GAME
+  if (distance <= 0) {
+    clearInterval(x);
+    document.getElementById("startTimer").innerHTML = "GAME STARTED";
+    document.getElementById("in").removeAttribute('readonly')
+
+  }
+  console.log("seconds: " + seconds)
+  console.log("distance: " + distance)
+  console.log("curr: " + curr)
+}, 1000);
+}
