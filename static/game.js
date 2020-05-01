@@ -16,27 +16,31 @@ socket.on('new_connection', function(players){
   //console.log(players)
   var progress_bars = document.getElementById("progress_bars")
   progress_bars.innerHTML = ""
+  var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
+  var counter = 0
   for (var id in players) {
-    // var new_bar = document.createElement("PROGRESS")
-    // console.log(id)
-    // new_bar.setAttribute("id", id)
-    // new_bar.setAttribute("value", 0)
-    // new_bar.setAttribute("max", 100)
-    // progress_bars.appendChild(new_bar)
+    var outMostDiv = document.createElement("DIV")
+    outMostDiv.setAttribute("class", "col-md-12")
 
-  //  bootstrap version
+
     var outDiv = document.createElement("DIV")
-    outDiv.setAttribute("class", "progress active col-12")
+    outDiv.setAttribute("class", "progress active mb-2")
+    outDiv.setAttribute("style", "height: 35px")
+    outMostDiv.appendChild(outDiv)
 
+
+    var color = colors[counter]
+    var classAttribute = "progress-bar progress-bar-striped pbar" + color
     var innerDiv = document.createElement("DIV")
     innerDiv.setAttribute("id", id)
-    innerDiv.setAttribute("class", "progress-bar progress-bar-striped progress-bar-animated")
+    innerDiv.setAttribute("class", classAttribute)
     innerDiv.setAttribute("role", "progressbar")
     innerDiv.setAttribute("style", "width: 0%;")
     innerDiv.innerHTML = String(id)
     outDiv.appendChild(innerDiv)
-    progress_bars.appendChild(outDiv)
-  }
+    progress_bars.appendChild(outMostDiv)
+    counter = (counter + 1) % 5
+}
 });
 
 
