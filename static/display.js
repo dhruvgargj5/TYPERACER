@@ -14,9 +14,10 @@ var progress = 0;
 
 document.addEventListener("DOMContentLoaded", init);
 function init() {
-  let txt = document.getElementById('in');
-  txt.addEventListener('keypress', type);
-  txt.addEventListener('keydown', backspace);
+    console.log("IN DER")
+    let txt = document.getElementById('in');
+    txt.addEventListener('keypress', type);
+    txt.addEventListener('keydown', backspace);
   /*
     used to be keydown. making it keypress fixes shift and case problem.
     see Google Doc for explanation
@@ -25,6 +26,7 @@ function init() {
 
 function backspace(event)
 {
+  if(!document.getElementById('in').hasAttribute('readonly')){
   var evtKcode = event.keyCode;
   if (evtKcode == 8)
   {
@@ -45,7 +47,9 @@ function backspace(event)
     }
   }
 }
+}
 function type(event) {
+  if(!document.getElementById('in').hasAttribute('readonly')){
   let char = event.which;
   let s = String.fromCharCode(char);
 
@@ -60,6 +64,7 @@ function type(event) {
   }
   updateProgress();
   update_wpm();
+}
 }
 
 function updateProgress() {

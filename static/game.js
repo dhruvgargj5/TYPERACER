@@ -57,10 +57,17 @@ function buttonClick(){
   console.log("someone clicked the button")
 }
 
-
 socket.on("otherPlayerReady", function(message) {
   var start = document.getElementById('start')
   var m = document.createElement("PARAGRAPH")
   m.innerHTML = message
   start.appendChild(m)
+});
+
+
+socket.on("gameStart", function (){
+  console.log("game has started")
+  document.getElementById("in").removeAttribute('readonly')
+  console.log(document.getElementById('in').getAttribute('readonly'))
+
 });

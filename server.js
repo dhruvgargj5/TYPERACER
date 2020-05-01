@@ -30,6 +30,19 @@ io.on('connection', function(socket) {
       var message = "Player " + socket.id + " is ready."
       io.sockets.emit("otherPlayerReady", message)
     }
+    var allReady = true
+    for (var id in players){
+      if (players.hasOwnProperty(id)){
+        var ready = players[id].isReady
+        if (!ready){
+          allReady = false
+        }
+      }
+    }
+
+    if(allReady){
+      io.sockets.emit('gameStart')
+    }
   });
 });
 
@@ -38,7 +51,8 @@ var players = {};
 io.on('connection', function(socket) {
   players[socket.id] = {
     player_progress: 0,
-    isReady : false
+    isReady : false,
+    win : false
   };
   console.log("Someone has connected, id: " + socket.id)
   io.sockets.emit('new_connection', players)
