@@ -16,7 +16,7 @@ socket.on('new_connection', function(players){
   progress_bars.innerHTML = ""
   for (var id in players) {
     var new_bar = document.createElement("PROGRESS")
-    console.log(id)
+  //  console.log(id)
     //new_bar.setAttribute("id", id)
     new_bar.setAttribute("value", 0)
     new_bar.setAttribute("max", 100)
