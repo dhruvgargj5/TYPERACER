@@ -40,7 +40,7 @@ io.on('connection', function(socket) {
   socket.on('type', function(data) {
     var player = players[socket.id] || {};
     player.player_progress = data.progress;
-    console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
+    //console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
   });
 });
 

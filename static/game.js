@@ -11,13 +11,13 @@ setInterval(function() {
 
 socket.on('new_connection', function(players){
   console.log("a new person has connected")
-  console.log(players)
+  //console.log(players)
   var progress_bars = document.getElementById("progress_bars")
   progress_bars.innerHTML = ""
   for (var id in players) {
     var new_bar = document.createElement("PROGRESS")
-  //  console.log(id)
-    //new_bar.setAttribute("id", id)
+    console.log(id)
+    new_bar.setAttribute("id", id)
     new_bar.setAttribute("value", 0)
     new_bar.setAttribute("max", 100)
     progress_bars.appendChild(new_bar)
@@ -25,11 +25,18 @@ socket.on('new_connection', function(players){
 });
 
 socket.on('state', function(players) {
+  //console.log(players)
   for (var id in players) {
-    // console.log("id: " + id)
-    // var player_progress_bar = document.getElementById(id)
+    console.log("id: " + id)
+    //console.log(players)
+    if (players.hasOwnProperty(id)) {
+      console.log(typeof(players[id]))
+      console.log(players[id].player_progress)
+      var player_progress_bar = document.getElementById(id)
+      player_progress_bar.setAttribute("value", players[id].player_progress)
+    }
     // console.log("players: ")
     // console.log(players)
-    //player_progress_bar.setAttribute("value", players.id.player_progress)
+
   }
 });
