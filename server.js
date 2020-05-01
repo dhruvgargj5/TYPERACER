@@ -31,11 +31,16 @@ setInterval(function() {
 
 var players = {};
 io.on('connection', function(socket) {
-  socket.on('new player', function() {
-    players[socket.id] = {
-      player_progress: 0
-    };
-  });
+  players[socket.id] = {
+    player_progress: 0
+  };
+  console.log("Someone has connected, id: " + socket.id)
+  io.sockets.emit('new_connection', players)
+
+
+
+
+
   socket.on('movement', function(data) {
     var player = players[socket.id] || {};
     if (data.left) {
