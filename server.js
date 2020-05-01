@@ -22,13 +22,23 @@ server.listen(5000, function() {
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
+  socket.on('playerReady', function()
+  {
+    if(players[socket.id].isReady == false)
+    {
+      players[socket.id].isReady = true
+      var message = "Player " + socket.id + " is ready."
+      io.sockets.emit("otherPlayerReady", message)
+    }
+  });
 });
 
 
 var players = {};
 io.on('connection', function(socket) {
   players[socket.id] = {
-    player_progress: 0
+    player_progress: 0,
+    isReady : false
   };
   console.log("Someone has connected, id: " + socket.id)
   io.sockets.emit('new_connection', players)

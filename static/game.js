@@ -9,6 +9,8 @@ setInterval(function() {
   socket.emit('type', my_progress);
 }, 1000 / 60);
 
+
+//RECEIVE FROM SERVER: CREATES ALL PLAYER'S PROG bars
 socket.on('new_connection', function(players){
   console.log("a new person has connected")
   //console.log(players)
@@ -24,14 +26,16 @@ socket.on('new_connection', function(players){
   }
 });
 
+
+//RECEIVE FROM SERVER: update ALL player's progress bars
 socket.on('state', function(players) {
   //console.log(players)
   for (var id in players) {
-    console.log("id: " + id)
+//    console.log("id: " + id)
     //console.log(players)
     if (players.hasOwnProperty(id)) {
-      console.log(typeof(players[id]))
-      console.log(players[id].player_progress)
+      // console.log(typeof(players[id]))
+      // console.log(players[id].player_progress)
       var player_progress_bar = document.getElementById(id)
       player_progress_bar.setAttribute("value", players[id].player_progress)
     }
@@ -41,7 +45,22 @@ socket.on('state', function(players) {
   }
 });
 
+//RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 socket.on('player_disconnected',function(disconnectedID) {
   var toBeDeletedBar = document.getElementById(disconnectedID)
   toBeDeletedBar.remove()
+});
+
+//Player ready from button
+function buttonClick(){
+  socket.emit('playerReady')
+  console.log("someone clicked the button")
+}
+
+
+socket.on("otherPlayerReady", function(message) {
+  var start = document.getElementById('start')
+  var m = document.createElement("PARAGRAPH")
+  m.innerHTML = message
+  start.appendChild(m)
 });

@@ -13,18 +13,14 @@
   </head>
   <body>
     <div class = "container mt-1">
-    <div class = "row">
       <h1>TypeRacer</h1>
-    </div>
     <br/>
-    <div id="progress_bars" class="row">
-      <div class="progress active col-12">
-        <div id="prog"class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
-      </div>
+    <div id="progress_bars" class="row ml-1">
     </div>
     <br/>
     <br/>
-    <div class = "row flex-column">
+    <div class = "row">
+    <div class = "flex-md-column col-md-9">
       <p id = "correct_text" class = "alert alert-info">Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.
       </p>
       <!-- <p id='input_text'></p> -->
@@ -42,9 +38,13 @@
     <div class="row col-3">
       <p id="wpm">wpm: </p>
     </div>
-      <div  id="bottom">
+    </div>
+    <div class = "col-md-3">
+      <button type="button" class="btn btn-danger" id = "readyButton" onclick = "buttonClick()">Ready</button>
+      <div id = "start">
       </div>
     </div>
+  </div>
   </div>
 
     <!-- Optional JavaScript -->
