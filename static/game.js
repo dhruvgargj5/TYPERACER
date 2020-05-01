@@ -40,3 +40,8 @@ socket.on('state', function(players) {
 
   }
 });
+
+socket.on('player_disconnected',function(disconnectedID) {
+  var toBeDeletedBar = document.getElementById(disconnectedID)
+  toBeDeletedBar.remove()
+});

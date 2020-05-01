@@ -24,10 +24,6 @@ server.listen(5000, function() {
 io.on('connection', function(socket) {
 });
 
-//prints hi
-setInterval(function() {
-  io.sockets.emit('message', 'hi!');
-}, 1000);
 
 var players = {};
 io.on('connection', function(socket) {
@@ -40,7 +36,7 @@ io.on('connection', function(socket) {
   socket.on('type', function(data) {
     var player = players[socket.id] || {};
     player.player_progress = data.progress;
-    //console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
+  //  console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
   });
 });
 
@@ -51,6 +47,8 @@ setInterval(function() {
 io.on('connection', function(socket) {
   // other handlers ...
   socket.on('disconnect', function() {
-    // remove disconnected player
+    var playerID = socket.id
+    players[socket.id].player_progress = 0
+    io.sockets.emit('player_disconnected', playerID)
   });
 });
