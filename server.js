@@ -22,12 +22,13 @@ server.listen(5000, function() {
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
+  var players = gameState.players
   socket.on('playerReady', function()
   {
     if(players[socket.id].isReady == false)
     {
       players[socket.id].isReady = true
-      var message = "Player " + socket.id + " is ready."
+      var message = "Player " + socket.id + " is ready.<br>"
       io.sockets.emit("otherPlayerReady", message)
     }
     var allReady = true
@@ -41,31 +42,40 @@ io.on('connection', function(socket) {
     }
 
     if(allReady){
-      io.sockets.emit('gameStart', players)
+      gameState.hasStarted = true;
+      io.sockets.emit('gameStart')
     }
   });
 });
 
-
-var players = {};
+var gameState = {};
+gameState["players"] = {};
+gameState["hasStarted"] = false;
+var players =  gameState.players
 io.on('connection', function(socket) {
   players[socket.id] = {
     player_progress: 0,
     isReady : false,
-    win : false
+    win : false,
+    isPlaying: true
   };
-  console.log("Someone has connected, id: " + socket.id)
+  if (gameState.hasStarted) {
+    players[socket.id].isPlaying = false;
+  }
+  console.log("gameState: ")
+  console.log(gameState)
+  //console.log("Someone has connected, id: " + socket.id)
   io.sockets.emit('new_connection', players)
 
   socket.on('type', function(data) {
     var player = players[socket.id] || {};
     player.player_progress = data.progress;
-  //  console.log("socket id: " + socket.id + ", progress: " + player.player_progress)
   });
+
 });
 
 setInterval(function() {
-  io.sockets.emit('state', players);
+  io.sockets.emit('state', gameState.players);
 }, 1000 / 60);
 
 io.on('connection', function(socket) {

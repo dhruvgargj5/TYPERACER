@@ -4,7 +4,7 @@ var userCounter = 0;
 var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
-var startedTimer = false;
+//var startedTimer = false;
 var correct_text = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense."
 
 var isWin = false;
@@ -57,11 +57,11 @@ function type(event) {
   compare(counter);
   counter++;
   userCounter++;
-  if (!startedTimer)
-  {
-    startTimer();
-    startedTimer = true;
-  }
+  // if (!startedTimer)
+  // {
+  //   startTimer();
+  //   startedTimer = true;
+  // }
   updateProgress();
   update_wpm();
 }

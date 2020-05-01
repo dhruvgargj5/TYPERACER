@@ -30,28 +30,39 @@ socket.on('new_connection', function(players){
   progress_bars.innerHTML = ""
   var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
   var counter = 0
+
+  var whoisReady = document.getElementById("whoReady")
+  whoisReady.innerHTML = ""
   for (var id in players) {
-    var outMostDiv = document.createElement("DIV")
-    outMostDiv.setAttribute("class", "col-md-12")
+    if (players.hasOwnProperty(id)) {
+      if (players[id].isPlaying) {
+        var outMostDiv = document.createElement("DIV")
+        outMostDiv.setAttribute("class", "col-md-12")
 
 
-    var outDiv = document.createElement("DIV")
-    outDiv.setAttribute("class", "progress active mb-2")
-    outDiv.setAttribute("style", "height: 35px")
-    outMostDiv.appendChild(outDiv)
+        var outDiv = document.createElement("DIV")
+        outDiv.setAttribute("class", "progress active mb-2")
+        outDiv.setAttribute("style", "height: 35px")
+        outMostDiv.appendChild(outDiv)
 
 
-    var color = colors[counter]
-    var classAttribute = "progress-bar progress-bar-striped pbar " + color
-    var innerDiv = document.createElement("DIV")
-    innerDiv.setAttribute("id", id)
-    innerDiv.setAttribute("class", classAttribute)
-    innerDiv.setAttribute("role", "progressbar")
-    innerDiv.setAttribute("style", "width: 0%;")
-    innerDiv.innerHTML = String(id)
-    outDiv.appendChild(innerDiv)
-    progress_bars.appendChild(outMostDiv)
-    counter = (counter + 1) % 5
+        var color = colors[counter]
+        var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
+        var innerDiv = document.createElement("DIV")
+        innerDiv.setAttribute("id", id)
+        innerDiv.setAttribute("class", classAttribute)
+        innerDiv.setAttribute("role", "progressbar")
+        innerDiv.setAttribute("style", "width: 0%;")
+        innerDiv.innerHTML = String(id)
+        outDiv.appendChild(innerDiv)
+        progress_bars.appendChild(outMostDiv)
+        counter = (counter + 1) % 5
+      }
+      if (players[id].isReady) {
+        var message = "Player " + id + " is ready.<br>"
+        whoisReady.innerHTML += message
+      }
+    }
 }
 });
 
@@ -60,7 +71,7 @@ socket.on('new_connection', function(players){
 socket.on('state', function(players) {
   //console.log(players)
   for (var id in players) {
-//    console.log("id: " + id)
+    //console.log("id: " + id)
     //console.log(players)
     if (players.hasOwnProperty(id)) {
       // console.log(typeof(players[id]))
@@ -95,14 +106,12 @@ function buttonClick(){
 }
 
 socket.on("otherPlayerReady", function(message) {
-  var start = document.getElementById('start')
-  var m = document.createElement("PARAGRAPH")
-  m.innerHTML = message
-  start.appendChild(m)
+  var whoisReady = document.getElementById("whoReady")
+  whoisReady.innerHTML += message
 });
 
 
-socket.on("gameStart", function (players){
+socket.on("gameStart", function (){
   console.log("game has started")
   startCountdown()
 });
@@ -118,7 +127,7 @@ function startCountdown(){
 
   // Get today's date and time
   // Find the distance between now and the count down date
-  var distance = 5000 - curr;
+  var distance = 10000 - curr;
   curr += 1000
 
 
@@ -132,6 +141,7 @@ function startCountdown(){
   if (distance <= 0) {
     clearInterval(x);
     document.getElementById("startTimer").innerHTML = "GAME STARTED";
+    startTimer()
     document.getElementById("in").removeAttribute('readonly')
   }
 }, 1000);
