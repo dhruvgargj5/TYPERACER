@@ -64,9 +64,7 @@ io.on('connection', function(socket) {
   if (gameState.hasStarted) {
     players[socket.id].isPlaying = false;
   }
-  console.log("gameState: ")
-  console.log(gameState)
-  //console.log("Someone has connected, id: " + socket.id)
+  
   io.sockets.emit('new_connection', players)
 
   socket.on('progressUpdate', function(data) {
@@ -79,6 +77,7 @@ io.on('connection', function(socket) {
 setInterval(function() {
   io.sockets.emit('state', gameState.players);
 }, 1000 / 60);
+
 
 io.on('connection', function(socket) {
   socket.on('disconnect', function() {
