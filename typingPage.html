@@ -16,7 +16,14 @@
       <h1>TypeRacer</h1>
     <br/>
 
-    <br/>
+    <div id="nameSpace">
+      <form id="name_form" class="form-inline">
+          <input type="text" id="name_in" class="form-control mr-sm-2" placeholder="Name"/>
+          <button type="button" class="btn btn-success" id = "nameButton" style="visibility:visible" onclick = "submitName()">Submit</button>
+          <div id="name_feedback">
+          </div>
+      </form>
+    </div>
     <br/>
     <div class = "row">
     <div class = "flex-md-column col-md-9">
@@ -41,7 +48,7 @@
     </div>
     </div>
     <div class = "col-md-3">
-      <button type="button" class="btn btn-danger" id = "readyButton" onclick = "buttonClick()">Ready</button>
+      <button type="button" style="visibility:hidden" class="btn btn-danger" id = "readyButton" onclick = "buttonClick()">Ready</button>
       <div id = "gameInfo">
         <p id = "whoReady">
         </p>

@@ -29,6 +29,9 @@ var players =  gameState.players
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
   var players = gameState.players
+  socket.on('NameSubmitted', function(username){
+    players[socket.id]["name"] = username
+  })
   // when a player clicks their ready button
   socket.on('playerReady', function()
   {
@@ -37,7 +40,7 @@ io.on('connection', function(socket) {
     {
       // display player connected message
       players[socket.id].isReady = true
-      var message = "Player " + socket.id + " is ready.<br>"
+      var message = players[socket.id].name + " is ready.<br>"
       io.sockets.emit("otherPlayerReady", message)
     }
 
@@ -90,9 +93,9 @@ setInterval(function() {
 //deletes a player when they disconnect
 io.on('connection', function(socket) {
   socket.on('disconnect', function() {
-    var playerID = socket.id
-    players[socket.id].player_progress = 0
-    io.sockets.emit('player_disconnected', playerID)
-    delete players[playerID]
+    var players = gameState.players
+    var playerInfo = [socket.id, players[socket.id].name]
+    io.sockets.emit('player_disconnected', playerInfo)
+    delete players[socket.id]
   });
 });

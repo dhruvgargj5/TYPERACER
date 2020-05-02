@@ -10,7 +10,6 @@ setInterval(function() {
   socket.emit('progressUpdate', my_progress);
 }, 1000 / 60);
 
-
 //RECEIVE FROM SERVER: Creates new player's progress bars and gives the new
 //player who is connected who all is ready
 
@@ -19,6 +18,8 @@ setInterval(function() {
 //progress bar for each player as well as printing who's ready
 //The progress bar is as follows:
 // outMostDiv -- > <div class = "col-mod-12">
+//                       <label>
+//                        </label>
 // outDiv -- >       <div class = "progress active mb-2" style = "height: 35px">
 // innerDiv -- >         <div class = "progress-bar progress-bar-striped pbar COLOR"
 //                       id = "id" role = "progressbar" style = "width: 0%;">
@@ -61,19 +62,43 @@ socket.on('new_connection', function(players){
         innerDiv.setAttribute("class", classAttribute)
         innerDiv.setAttribute("role", "progressbar")
         innerDiv.setAttribute("style", "width: 0%;")
-        innerDiv.innerHTML = String(id)
         outDiv.appendChild(innerDiv)
         progress_bars.appendChild(outMostDiv)
         counter = (counter + 1) % 5
       }
+
       //prints to the client which players are ready
       if (players[id].isReady) {
-        var message = "Player " + id + " is ready.<br>"
+        var message = "Player " + players[id].name + " is ready.<br>"
         whoisReady.innerHTML += message
       }
     }
 }
 });
+
+function submitName() {
+  var namein = document.getElementById('name_in')
+  var username = namein.value
+  var submitName = document.getElementById('nameButton')
+  var errormessage = document.getElementById('name_feedback')
+  if (username == "") {
+    errormessage.setAttribute("class", "invalid-feedback")
+    errormessage.innerHTML = "Please enter a name to continue"
+    namein.setAttribute("class", "form-control is-invalid mr-sm-2")
+  }
+  if (username != "") {
+    errormessage.setAttribute("class", "valid-feedback")
+    namein.setAttribute("class", "form-control is-valid mr-sm-2")
+    errormessage.innerHTML = "Looks good!"
+    document.getElementById("readyButton").style.visibility='visible';
+    submitName.remove()
+    namein.remove()
+    var message = document.createElement("H5")
+    message.innerHTML = "Type fast " + username
+    document.getElementById("nameSpace").appendChild(message)
+    socket.emit("NameSubmitted", username)
+  }
+}
 
 
 //RECEIVE FROM SERVER 60x/second: update ALL player's progress bars
@@ -89,14 +114,26 @@ socket.on('state', function(players) {
 
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 //prints that a player has disconnected
-socket.on('player_disconnected',function(disconnectedID) {
-  var toBeDeletedBar = document.getElementById(disconnectedID)
+socket.on('player_disconnected',function(playerInfo) {
+  var toBeDeletedBar = document.getElementById(playerInfo[0])
   toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
   var gameInfo = document.getElementById('gameInfo')
   var discPlayer = document.createElement("PARAGRAPH")
-  var message = "Player: " + disconnectedID + " has disconnected"
+  if(playerInfo[1] == null) {
+    var message = "Anonymous has disconnected<br>"
+  }
+  else {
+    var message = playerInfo[1] + " has disconnected<br>"
+  }
   discPlayer.innerHTML = message
-  gameInfo.appendChild(m)
+  gameInfo.appendChild(discPlayer)
+  var x = 0;
+  setInterval(function() {
+    x += 1;
+    if (x > 3) {
+      gameInfo.removeChild(discPlayer)
+    }
+  }, 1000)
 });
 
 //Player ready from "ready" button
