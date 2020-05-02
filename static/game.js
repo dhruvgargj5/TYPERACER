@@ -1,20 +1,22 @@
 var socket = io();
 
 
-//socket.emit('new player');
 setInterval(function() {
+  //gets the progress from display.js
   var my_progress = {
     progress: getProgress()
   }
-  socket.emit('type', my_progress);
+  //emits the progess 60x/second
+  socket.emit('progressUpdate', my_progress);
 }, 1000 / 60);
 
 
-//RECEIVE FROM SERVER: CREATES ALL PLAYER'S PROG bars
+//RECEIVE FROM SERVER: Creates new player's progress bars and gives the new
+//player who is connected who all is ready
 
 //Runs when the SERVER emits "new_connection" and the players object
 //This iterates through the player's object and, via player ID, creates a
-//progress bar for each player.
+//progress bar for each player as well as printing who's ready
 //The progress bar is as follows:
 // outMostDiv -- > <div class = "col-mod-12">
 // outDiv -- >       <div class = "progress active mb-2" style = "height: 35px">
@@ -25,27 +27,33 @@ setInterval(function() {
 //                 </div>
 socket.on('new_connection', function(players){
   console.log("a new person has connected")
-  //console.log(players)
+  //progress_bars is the div that will contain all progress bars
   var progress_bars = document.getElementById("progress_bars")
+  //empties all progress bars, so we can populate them for the new connection
   progress_bars.innerHTML = ""
+  //list of colors for the progress bars
   var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
   var counter = 0
 
+  //whoIsReady is the HTML where the "Player is ready will be"
   var whoisReady = document.getElementById("whoReady")
   whoisReady.innerHTML = ""
   for (var id in players) {
     if (players.hasOwnProperty(id)) {
+      //Checks to see if the player is playing and if so it creates a progress
+      //bar for that player
+      //isPlaying is determined server side
       if (players[id].isPlaying) {
+
+        //all progress bar content, breakdown of divs is above
         var outMostDiv = document.createElement("DIV")
         outMostDiv.setAttribute("class", "col-md-12")
-
 
         var outDiv = document.createElement("DIV")
         outDiv.setAttribute("class", "progress active mb-2")
         outDiv.setAttribute("style", "height: 35px")
         outMostDiv.appendChild(outDiv)
-
-
+        //sets the color of each bar
         var color = colors[counter]
         var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
         var innerDiv = document.createElement("DIV")
@@ -58,6 +66,7 @@ socket.on('new_connection', function(players){
         progress_bars.appendChild(outMostDiv)
         counter = (counter + 1) % 5
       }
+      //prints to the client which players are ready
       if (players[id].isReady) {
         var message = "Player " + id + " is ready.<br>"
         whoisReady.innerHTML += message
@@ -67,39 +76,30 @@ socket.on('new_connection', function(players){
 });
 
 
-//RECEIVE FROM SERVER: update ALL player's progress bars
+//RECEIVE FROM SERVER 60x/second: update ALL player's progress bars
 socket.on('state', function(players) {
-  //console.log(players)
   for (var id in players) {
-    //console.log("id: " + id)
-    //console.log(players)
     if (players.hasOwnProperty(id)) {
-      // console.log(typeof(players[id]))
-      // console.log(players[id].player_progress)
       var player_progress_bar = document.getElementById(id)
-      // player_progress_bar.setAttribute("value", players[id].player_progress)
       var style = "width: " + String(players[id].player_progress) + "%"
        player_progress_bar.setAttribute("style", style)
     }
-    // console.log("players: ")
-    // console.log(players)
-
   }
 });
 
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
+//prints that a player has disconnected
 socket.on('player_disconnected',function(disconnectedID) {
   var toBeDeletedBar = document.getElementById(disconnectedID)
   toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
-  var start = document.getElementById('start')
-  var m = document.createElement("PARAGRAPH")
+  var gameInfo = document.getElementById('gameInfo')
+  var discPlayer = document.createElement("PARAGRAPH")
   var message = "Player: " + disconnectedID + " has disconnected"
-  console.log(message)
-  m.innerHTML = message
-  start.appendChild(m)
+  discPlayer.innerHTML = message
+  gameInfo.appendChild(m)
 });
 
-//Player ready from button
+//Player ready from "ready" button
 function buttonClick(){
   socket.emit('playerReady')
   console.log("someone clicked the button")
@@ -110,18 +110,17 @@ socket.on("otherPlayerReady", function(message) {
   whoisReady.innerHTML += message
 });
 
-
+//Starts the countdown (to the game) timer
 socket.on("gameStart", function (){
   console.log("game has started")
   startCountdown()
 });
 
-
+//The countdown (to the game) timer is started. This is the "Start in " timer.
+//Prints "GAME STARTED" to client
+//Makes the client's text box NON-readonly. Client can now enter text
 function startCountdown(){
-
-  //credit W3 Schools
-
-// Update the count down every 1 second
+//credit W3 Schools
   var curr = 0
   var x = setInterval(function() {
 
@@ -129,8 +128,6 @@ function startCountdown(){
   // Find the distance between now and the count down date
   var distance = 10000 - curr;
   curr += 1000
-
-
   // Time calculations for days, hours, minutes and seconds
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 

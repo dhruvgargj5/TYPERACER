@@ -31,6 +31,8 @@ io.on('connection', function(socket) {
       var message = "Player " + socket.id + " is ready.<br>"
       io.sockets.emit("otherPlayerReady", message)
     }
+
+    //if everyone is ready, it sets hasStarted to true and emits gameStart
     var allReady = true
     for (var id in players){
       if (players.hasOwnProperty(id)){
@@ -40,7 +42,6 @@ io.on('connection', function(socket) {
         }
       }
     }
-
     if(allReady){
       gameState.hasStarted = true;
       io.sockets.emit('gameStart')
@@ -52,6 +53,7 @@ var gameState = {};
 gameState["players"] = {};
 gameState["hasStarted"] = false;
 var players =  gameState.players
+
 io.on('connection', function(socket) {
   players[socket.id] = {
     player_progress: 0,
@@ -67,7 +69,7 @@ io.on('connection', function(socket) {
   //console.log("Someone has connected, id: " + socket.id)
   io.sockets.emit('new_connection', players)
 
-  socket.on('type', function(data) {
+  socket.on('progressUpdate', function(data) {
     var player = players[socket.id] || {};
     player.player_progress = data.progress;
   });
