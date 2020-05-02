@@ -107,7 +107,7 @@ socket.on('state', function(players) {
     if (players.hasOwnProperty(id)) {
       var player_progress_bar = document.getElementById(id)
       var style = "width: " + String(players[id].player_progress) + "%"
-       player_progress_bar.setAttribute("style", style)
+      player_progress_bar.setAttribute("style", style)
     }
   }
 });
