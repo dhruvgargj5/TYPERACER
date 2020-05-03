@@ -25,6 +25,8 @@ var gameState = {};
 gameState["players"] = {};
 gameState["hasStarted"] = false;
 var players =  gameState.players
+var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
+var counter = 0
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
@@ -61,12 +63,15 @@ io.on('connection', function(socket) {
     }
   });
   // creates a new player when they join
+  var color_in = colors[counter]
   players[socket.id] = {
     player_progress: 0,
     isReady : false,
     win : false,
-    isPlaying: true
+    isPlaying: true,
+    color : color_in
   };
+  counter = (counter + 1) % 5
   // doesn't let player participate if the game has started
   // hasStarted -> countdown has begin (all present players are ready)
   if (gameState.hasStarted) {
@@ -86,7 +91,7 @@ io.on('connection', function(socket) {
 
 // sends game state to clients to update progress bars (60 times/sec)
 setInterval(function() {
-  io.sockets.emit('state', gameState.players);
+  io.sockets.emit('state', gameState);
 }, 1000 / 60);
 
 

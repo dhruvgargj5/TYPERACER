@@ -52,73 +52,89 @@ setInterval(function() {
 //                 </div>
 socket.on('new_connection', function(players){
   console.log("a new person has connected")
-  //progress_bars is the div that will contain all progress bars
-  var progress_bars = document.getElementById("progress_bars")
-  //empties all progress bars, so we can populate them for the new connection
-  progress_bars.innerHTML = ""
-  //list of colors for the progress bars
-  var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
-  var counter = 0
-
-  //whoIsReady is the HTML where the "Player is ready will be"
-  var whoisReady = document.getElementById("whoReady")
-  whoisReady.innerHTML = ""
-  for (var id in players) {
-    if (players.hasOwnProperty(id)) {
-      //Checks to see if the player is playing and if so it creates a progress
-      //bar for that player
-      //isPlaying is determined server side
-      if (players[id].isPlaying) {
-
-        //all progress bar content, breakdown of divs is above
-        var outMostDiv = document.createElement("DIV")
-        outMostDiv.setAttribute("class", "col-md-12")
-
-        var outDiv = document.createElement("DIV")
-        outDiv.setAttribute("class", "progress active mb-2")
-        outDiv.setAttribute("style", "height: 35px")
-        outMostDiv.appendChild(outDiv)
-        //sets the color of each bar
-        var color = colors[counter]
-        var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
-        var innerDiv = document.createElement("DIV")
-        innerDiv.setAttribute("id", id)
-        innerDiv.setAttribute("class", classAttribute)
-        innerDiv.setAttribute("role", "progressbar")
-        innerDiv.setAttribute("style", "width: 0%;")
-        outDiv.appendChild(innerDiv)
-        progress_bars.appendChild(outMostDiv)
-        counter = (counter + 1) % 5
-      }
-
-      //prints to the client which players are ready
-      // if (players[id].isReady) {
-      //   var message = "Player " + players[id].name + " is ready.<br>"
-      //   whoisReady.innerHTML += message
-      // }
-    }
-}
+//   //progress_bars is the div that will contain all progress bars
+//   var progress_bars = document.getElementById("progress_bars")
+//   //empties all progress bars, so we can populate them for the new connection
+//   progress_bars.innerHTML = ""
+//   //list of colors for the progress bars
+//   var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
+//   var counter = 0
+//
+//   //whoIsReady is the HTML where the "Player is ready will be"
+//   var whoisReady = document.getElementById("whoReady")
+//   whoisReady.innerHTML = ""
+//   for (var id in players) {
+//     if (players.hasOwnProperty(id)) {
+//       //Checks to see if the player is playing and if so it creates a progress
+//       //bar for that player
+//       //isPlaying is determined server side
+//       if (players[id].isPlaying) {
+//
+//         //all progress bar content, breakdown of divs is above
+//         var outMostDiv = document.createElement("DIV")
+//         outMostDiv.setAttribute("class", "col-md-12")
+//
+//         var outDiv = document.createElement("DIV")
+//         outDiv.setAttribute("class", "progress active mb-2")
+//         outDiv.setAttribute("style", "height: 35px")
+//         outMostDiv.appendChild(outDiv)
+//         //sets the color of each bar
+//         var color = colors[counter]
+//         var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
+//         var innerDiv = document.createElement("DIV")
+//         innerDiv.setAttribute("id", id)
+//         innerDiv.setAttribute("class", classAttribute)
+//         innerDiv.setAttribute("role", "progressbar")
+//         innerDiv.setAttribute("style", "width: 0%;")
+//         outDiv.appendChild(innerDiv)
+//         progress_bars.appendChild(outMostDiv)
+//         counter = (counter + 1) % 5
+//       }
+//     }
+// }
 });
-// <tr>
-//     <td>Mark</td>
-//     <td>Otto</td>
-// </tr>
-// <tr>
-//     <td>Jacob</td>
-//     <td>Thornton</td>
-// </tr>
-// <tr>
-//     <td>Larry</td>
-//     <td>the Bird</td>
-// </tr>
 
-//RECEIVE FROM SERVER 60x/second: update ALL player's progress bars
-socket.on('state', function(players) {
+//RECEIVE FROM SERVER 60x/second: creates and updates ALL player's progress bars
+//as well as their ready status
+
+socket.on('state', function(gameState) {
+  var players = gameState.players
   for (var id in players) {
     if (players.hasOwnProperty(id)) {
-      var player_progress_bar = document.getElementById(id)
-      var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
-      player_progress_bar.setAttribute("style", progressBarStyle)
+      //if player is ready, is playing, and they don't have a prog bar
+
+      //progress_bars is the div that will contain all progress bars
+      var progress_bars = document.getElementById("progress_bars")
+
+      if (players[id].isReady && players[id].isPlaying &&
+          (document.getElementById(id) == null)){
+
+            //all progress bar content, breakdown of divs is above
+            var outMostDiv = document.createElement("DIV")
+            outMostDiv.setAttribute("class", "col-md-12")
+
+            var outDiv = document.createElement("DIV")
+            outDiv.setAttribute("class", "progress active mb-2")
+            outDiv.setAttribute("style", "height: 35px")
+            outMostDiv.appendChild(outDiv)
+            var color = players[id].color
+            var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
+            var innerDiv = document.createElement("DIV")
+            innerDiv.setAttribute("id", id)
+            innerDiv.setAttribute("class", classAttribute)
+            innerDiv.setAttribute("role", "progressbar")
+            innerDiv.setAttribute("style", "width: 0%;")
+            outDiv.appendChild(innerDiv)
+            progress_bars.appendChild(outMostDiv)
+
+          }
+
+      //updates progress bar
+      if (gameState.hasStarted){
+        var player_progress_bar = document.getElementById(id)
+        var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+        player_progress_bar.setAttribute("style", progressBarStyle)
+      }
 
       //update if players are ready, disconnected, waiting to ready up
       var trID = id + "-tr"
