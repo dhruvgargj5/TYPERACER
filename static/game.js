@@ -163,36 +163,13 @@ socket.on('state', function(players) {
 //prints that a player has disconnected
 socket.on('player_disconnected',function(playerInfo) {
   var toBeDeletedBar = document.getElementById(playerInfo[0])
+  var toBeDeletedRow = document.getElementById(playerInfo[0] + "-tr")
   toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
   var gameInfo = document.getElementById('gameInfo')
-  var discPlayer = document.createElement("PARAGRAPH")
-  if(playerInfo[1] == null) {
-    var message = "Anonymous has disconnected<br>"
-  }
-  else {
-    var message = playerInfo[1] + " has disconnected<br>"
-  }
-  discPlayer.innerHTML = message
-  gameInfo.appendChild(discPlayer)
-  var x = 0;
-  setInterval(function() {
-    x += 1;
-    if (x > 3) {
-      gameInfo.removeChild(discPlayer)
-    }
-  }, 1000)
+  var table = document.getElementById("playerInfo")
+  table.removeChild(toBeDeletedRow)
 });
 
-//Player ready from "ready" button
-// function readyButton(){
-//   socket.emit('playerReady')
-//   console.log("someone clicked the button")
-// }
-
-// socket.on("otherPlayerReady", function(message) {
-//   var whoisReady = document.getElementById("whoReady")
-//   whoisReady.innerHTML += message
-// });
 
 //Starts the countdown (to the game) timer
 socket.on("gameStart", function (){
