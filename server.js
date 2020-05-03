@@ -98,8 +98,12 @@ setInterval(function() {
 io.on('connection', function(socket) {
   socket.on('disconnect', function() {
     var players = gameState.players
-    var playerInfo = [socket.id, players[socket.id].name]
+    var playerInfo = [socket.id, players[socket.id].isReady]
+    console.log(gameState)
     io.sockets.emit('player_disconnected', playerInfo)
     delete players[socket.id]
+    if (players == {}) {
+      gameState.hasStarted = false
+    }
   });
 });

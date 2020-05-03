@@ -65,6 +65,7 @@ socket.on('state', function(gameState) {
             //label for prog bar
             var label = document.createElement("PARAGRAPH")
             label.setAttribute("class", "col-md-1")
+            label.setAttribute("id", id + "-tag")
             label.innerHTML = players[id].name
 
             //all progress bar content, breakdown of divs is above
@@ -88,9 +89,9 @@ socket.on('state', function(gameState) {
 
           }
 
+      var player_progress_bar = document.getElementById(id)
       //updates progress bar
-      if (gameState.hasStarted){
-        var player_progress_bar = document.getElementById(id)
+      if (gameState.hasStarted && player_progress_bar != null){
         var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
         player_progress_bar.setAttribute("style", progressBarStyle)
       }
@@ -137,10 +138,15 @@ socket.on('state', function(gameState) {
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 //prints that a player has disconnected
 socket.on('player_disconnected',function(playerInfo) {
-  var toBeDeletedBar = document.getElementById(playerInfo[0])
+  if (playerInfo[1]) {
+    var toBeDeletedBar = document.getElementById(playerInfo[0])
+    var toBeDeletedLabel = document.getElementById(playerInfo[0] + "-tag")
+    var gameInfo = document.getElementById('gameInfo')
+    toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
+    toBeDeletedLabel.remove()
+  }
+
   var toBeDeletedRow = document.getElementById(playerInfo[0] + "-tr")
-  toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
-  var gameInfo = document.getElementById('gameInfo')
   var table = document.getElementById("playerInfo")
   table.removeChild(toBeDeletedRow)
 });
