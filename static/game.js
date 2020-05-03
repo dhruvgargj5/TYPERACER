@@ -41,59 +41,13 @@ setInterval(function() {
 //This iterates through the player's object and, via player ID, creates a
 //progress bar for each player as well as printing who's ready
 //The progress bar is as follows:
-// outMostDiv -- > <div class = "col-mod-12">
-//                       <label>
-//                        </label>
+// outMostDiv -- > <div class = "col-mod-11">
 // outDiv -- >       <div class = "progress active mb-2" style = "height: 35px">
 // innerDiv -- >         <div class = "progress-bar progress-bar-striped pbar COLOR"
 //                       id = "id" role = "progressbar" style = "width: 0%;">
 //                       </div>
 //                   </div>
 //                 </div>
-socket.on('new_connection', function(players){
-  console.log("a new person has connected")
-//   //progress_bars is the div that will contain all progress bars
-//   var progress_bars = document.getElementById("progress_bars")
-//   //empties all progress bars, so we can populate them for the new connection
-//   progress_bars.innerHTML = ""
-//   //list of colors for the progress bars
-//   var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
-//   var counter = 0
-//
-//   //whoIsReady is the HTML where the "Player is ready will be"
-//   var whoisReady = document.getElementById("whoReady")
-//   whoisReady.innerHTML = ""
-//   for (var id in players) {
-//     if (players.hasOwnProperty(id)) {
-//       //Checks to see if the player is playing and if so it creates a progress
-//       //bar for that player
-//       //isPlaying is determined server side
-//       if (players[id].isPlaying) {
-//
-//         //all progress bar content, breakdown of divs is above
-//         var outMostDiv = document.createElement("DIV")
-//         outMostDiv.setAttribute("class", "col-md-12")
-//
-//         var outDiv = document.createElement("DIV")
-//         outDiv.setAttribute("class", "progress active mb-2")
-//         outDiv.setAttribute("style", "height: 35px")
-//         outMostDiv.appendChild(outDiv)
-//         //sets the color of each bar
-//         var color = colors[counter]
-//         var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
-//         var innerDiv = document.createElement("DIV")
-//         innerDiv.setAttribute("id", id)
-//         innerDiv.setAttribute("class", classAttribute)
-//         innerDiv.setAttribute("role", "progressbar")
-//         innerDiv.setAttribute("style", "width: 0%;")
-//         outDiv.appendChild(innerDiv)
-//         progress_bars.appendChild(outMostDiv)
-//         counter = (counter + 1) % 5
-//       }
-//     }
-// }
-});
-
 //RECEIVE FROM SERVER 60x/second: creates and updates ALL player's progress bars
 //as well as their ready status
 
@@ -108,10 +62,14 @@ socket.on('state', function(gameState) {
 
       if (players[id].isReady && players[id].isPlaying &&
           (document.getElementById(id) == null)){
+            //label for prog bar
+            var label = document.createElement("PARAGRAPH")
+            label.setAttribute("class", "col-md-1")
+            label.innerHTML = players[id].name
 
             //all progress bar content, breakdown of divs is above
             var outMostDiv = document.createElement("DIV")
-            outMostDiv.setAttribute("class", "col-md-12")
+            outMostDiv.setAttribute("class", "col-md-11")
 
             var outDiv = document.createElement("DIV")
             outDiv.setAttribute("class", "progress active mb-2")
@@ -125,6 +83,7 @@ socket.on('state', function(gameState) {
             innerDiv.setAttribute("role", "progressbar")
             innerDiv.setAttribute("style", "width: 0%;")
             outDiv.appendChild(innerDiv)
+            progress_bars.appendChild(label)
             progress_bars.appendChild(outMostDiv)
 
           }

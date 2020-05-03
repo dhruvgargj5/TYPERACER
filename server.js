@@ -79,7 +79,6 @@ io.on('connection', function(socket) {
   }
 
   // emits all players data to update clients progress bars when a new player connects
-  io.sockets.emit('new_connection', players)
 
   // updates all players progress in players JSON (60 times/sec)
   socket.on('progressUpdate', function(data) {
