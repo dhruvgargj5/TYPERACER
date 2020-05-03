@@ -92,22 +92,69 @@ socket.on('new_connection', function(players){
       }
 
       //prints to the client which players are ready
-      if (players[id].isReady) {
-        var message = "Player " + players[id].name + " is ready.<br>"
-        whoisReady.innerHTML += message
-      }
+      // if (players[id].isReady) {
+      //   var message = "Player " + players[id].name + " is ready.<br>"
+      //   whoisReady.innerHTML += message
+      // }
     }
 }
 });
-
+// <tr>
+//     <td>Mark</td>
+//     <td>Otto</td>
+// </tr>
+// <tr>
+//     <td>Jacob</td>
+//     <td>Thornton</td>
+// </tr>
+// <tr>
+//     <td>Larry</td>
+//     <td>the Bird</td>
+// </tr>
 
 //RECEIVE FROM SERVER 60x/second: update ALL player's progress bars
 socket.on('state', function(players) {
   for (var id in players) {
     if (players.hasOwnProperty(id)) {
       var player_progress_bar = document.getElementById(id)
-      var style = "width: " + String(players[id].player_progress) + "%"
-      player_progress_bar.setAttribute("style", style)
+      var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+      player_progress_bar.setAttribute("style", progressBarStyle)
+
+      //update if players are ready, disconnected, waiting to ready up
+      var trID = id + "-tr"
+      var playerTable = document.getElementById("playerInfo")
+      var td1ID = id + "-td1"
+      var td2ID = id + "-td2"
+
+      if(document.getElementById(trID) == null){
+        var tr = document.createElement("TR")
+        tr.setAttribute("id", trID)
+        var td1 = document.createElement("TD")
+        var td2 = document.createElement("TD")
+        td1.setAttribute("id",td1ID)
+        td2.setAttribute("id",td2ID)
+        tr.appendChild(td1)
+        tr.appendChild(td2)
+        playerTable.appendChild(tr)
+      }
+      else{
+        var td1 = document.getElementById(td1ID)
+        var td2 = document.getElementById(td2ID)
+      }
+
+      if(players[id].name == null){
+        td1.innerHTML = "Anonymous Racer"
+      }
+      else{
+        td1.innerHTML = players[id].name
+      }
+      if(players[id].isReady == false){
+        td2.innerHTML = "Not ready"
+      }
+      else{
+        td2.innerHTML = "Ready!"
+      }
+
     }
   }
 });
@@ -142,10 +189,10 @@ socket.on('player_disconnected',function(playerInfo) {
 //   console.log("someone clicked the button")
 // }
 
-socket.on("otherPlayerReady", function(message) {
-  var whoisReady = document.getElementById("whoReady")
-  whoisReady.innerHTML += message
-});
+// socket.on("otherPlayerReady", function(message) {
+//   var whoisReady = document.getElementById("whoReady")
+//   whoisReady.innerHTML += message
+// });
 
 //Starts the countdown (to the game) timer
 socket.on("gameStart", function (){

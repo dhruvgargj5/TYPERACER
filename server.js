@@ -40,8 +40,8 @@ io.on('connection', function(socket) {
     {
       // display player connected message
       players[socket.id].isReady = true
-      var message = players[socket.id].name + " is ready.<br>"
-      io.sockets.emit("otherPlayerReady", message)
+      // var message = players[socket.id].name + " is ready.<br>"
+      // io.sockets.emit("otherPlayerReady", message)
     }
 
     // checks if everyone is ready
