@@ -1,6 +1,30 @@
 var socket = io();
 
-
+function readyBttnClick() {
+  console.log("someone clicked the ready button")
+    var namein = document.getElementById('name_in')
+    var username = namein.value
+    var readyUp = document.getElementById('readyButton')
+    var errormessage = document.getElementById('name_feedback')
+    if (username == "") {
+      errormessage.setAttribute("class", "invalid-feedback")
+      errormessage.innerHTML = "Please enter a name to continue"
+      namein.setAttribute("class", "form-control is-invalid mr-sm-2")
+    }
+    if (username != "") {
+      errormessage.setAttribute("class", "valid-feedback")
+      namein.setAttribute("class", "form-control is-valid mr-sm-2")
+      errormessage.innerHTML = "Looks good!"
+      readyUp.remove()
+      namein.remove()
+      var message = document.createElement("H5")
+      message.innerHTML = "Type fast " + username
+      document.getElementById("nameSpace").appendChild(message)
+      socket.emit("NameSubmitted", username)
+      socket.emit('playerReady')
+      console.log("someone clicked the button")
+    }
+}
 setInterval(function() {
   //gets the progress from display.js
   var my_progress = {
@@ -76,30 +100,6 @@ socket.on('new_connection', function(players){
 }
 });
 
-function submitName() {
-  var namein = document.getElementById('name_in')
-  var username = namein.value
-  var submitName = document.getElementById('nameButton')
-  var errormessage = document.getElementById('name_feedback')
-  if (username == "") {
-    errormessage.setAttribute("class", "invalid-feedback")
-    errormessage.innerHTML = "Please enter a name to continue"
-    namein.setAttribute("class", "form-control is-invalid mr-sm-2")
-  }
-  if (username != "") {
-    errormessage.setAttribute("class", "valid-feedback")
-    namein.setAttribute("class", "form-control is-valid mr-sm-2")
-    errormessage.innerHTML = "Looks good!"
-    document.getElementById("readyButton").style.visibility='visible';
-    submitName.remove()
-    namein.remove()
-    var message = document.createElement("H5")
-    message.innerHTML = "Type fast " + username
-    document.getElementById("nameSpace").appendChild(message)
-    socket.emit("NameSubmitted", username)
-  }
-}
-
 
 //RECEIVE FROM SERVER 60x/second: update ALL player's progress bars
 socket.on('state', function(players) {
@@ -137,10 +137,10 @@ socket.on('player_disconnected',function(playerInfo) {
 });
 
 //Player ready from "ready" button
-function buttonClick(){
-  socket.emit('playerReady')
-  console.log("someone clicked the button")
-}
+// function readyButton(){
+//   socket.emit('playerReady')
+//   console.log("someone clicked the button")
+// }
 
 socket.on("otherPlayerReady", function(message) {
   var whoisReady = document.getElementById("whoReady")
