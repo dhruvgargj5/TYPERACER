@@ -5,34 +5,12 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
-
 var games = {}
 var colors = ["danger", "success", "primary", "warning"]
 var colorCounter = 0
-// var colors =
-// {
-//   "red" : {"progBar" :"bg-danger" , "text" :  "text-danger"},
-//   "green" : {"progBar" : "bg-success", "text" : "text-success" },
-//   "blue" : {"progBar" : "bg-primary", "text" : "text-primary" },
-//   "yellow" : {"progBar" : "bg-warning" , "text" :  "text-warning"},
-// }
+var roomNo = 0
 
-// games {
-//   room-1: {
-//     hasStarted: true
-//     players: {
-//       id1: {
-//         //player info
-//       },
-//       id2: {
-//         //player info
-//       }
-//     }
-//   }
-//   room-2: {
-//
-//   }
-// }
+
 
 
 app.set('port', 5000);
@@ -48,27 +26,47 @@ server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
 
-
-var roomNo = 0
 io.on("connection", function(socket){
   var roomCode = addPersonToRoom(socket)
   //call playerTable update
   updatePlayerTable(roomCode)
   colorCounter = (colorCounter + 1) % 4
+
   socket.on('playerReady', function(usernameAndRoom){
-      readyUp(socket, usernameAndRoom)
-      updatePlayerTable(roomCode)
-      var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
-      io.in(roomCode).emit('createProgressBar', playerInfo)
+    readyUp(socket, usernameAndRoom)
+    updatePlayerTable(roomCode)
+    var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
+    io.in(roomCode).emit('createProgressBar', playerInfo)
   })
+
+  socket.on('disconnect', function() {
+    socket.leave(roomCode)
+    var leavingPlayerReady = games[roomCode]["players"][socket.id].isReady
+    delete games[roomCode]["players"][socket.id]
+    if (games[roomCode]["players"] == {}) {
+      delete games[roomCode]
+      roomNo++
+    }
+    else {
+      checkReady(roomCode)
+      deletePlayerInTable(socket.id,roomCode)
+      if(leavingPlayerReady){
+        io.in(roomCode).emit('deleteProgressBar', socket.id)
+      }
+    }
+  });
   console.log(games)
 });
+
+function deletePlayerInTable(id, roomCode){
+  var idAndRoomCode = [id,roomCode]
+  io.in(roomCode).emit("deletePlayerInTable",idAndRoomCode)
+}
 
 
 //playerTableUpdate function
 //  emit to a specifc room the whole gameState?
 // client side: they take the gameState and edit HTML
-
 function updatePlayerTable(roomCode) {
   io.in(roomCode).emit('playerTableUpdate', games[roomCode])
 }
@@ -137,6 +135,11 @@ function readyUp(socket, usernameAndRoom) {
   }
 
   // checks if everyone is ready
+  checkReady(room)
+}
+
+function checkReady(room) {
+  var players = games[room].players
   var allReady = true
   for (var id in players){
     if (players.hasOwnProperty(id)){
@@ -146,7 +149,7 @@ function readyUp(socket, usernameAndRoom) {
       }
     }
   }
-  // if everyone is ready->hasStarted to true and emit gameStart
+      // if everyone is ready->hasStarted to true and emit gameStart
   if(allReady){
     games[room]["hasStarted"] = true;
     io.in(room).emit('gameStart')
@@ -158,67 +161,54 @@ function readyUp(socket, usernameAndRoom) {
 
 
 
-// makes a gameState JSON that holds players and game info
-var gameState = {};
-gameState["players"] = {};
-gameState["hasStarted"] = false;
-var players =  gameState.players
-var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
-var colorCounter = 0
-
-// Add the WebSocket handlers
-io.on('connection', function(socket) {
-  var players = gameState.players
-  socket.on('NameSubmitted', function(username){
-    players[socket.id]["name"] = username
-  })
-  // when a player clicks their ready button
-  socket.on('playerReady', function()
-  {
-
-  });
-  // creates a new player when they join
-  var color_in = colors[colorCounter]
-  players[socket.id] = {
-    player_progress: 0,
-    isReady : false,
-    win : false,
-    isPlaying: true,
-    color : color_in
-  };
-  colorCounter = (colorCounter + 1) % 5
-  // doesn't let player participate if the game has started
-  // hasStarted -> countdown has begin (all present players are ready)
-  if (gameState.hasStarted) {
-    players[socket.id].isPlaying = false;
-  }
-
-  // emits all players data to update clients progress bars when a new player connects
-
-  // updates all players progress in players JSON (60 times/sec)
-  socket.on('progressUpdate', function(data) {
-    var player = players[socket.id] || {};
-    player.player_progress = data.progress;
-  });
-
-});
-
-// sends game state to clients to update progress bars (60 times/sec)
-setInterval(function() {
-  io.sockets.emit('state', gameState);
-}, 1000 / 60);
-
-
-//deletes a player when they disconnect
-io.on('connection', function(socket) {
-  socket.on('disconnect', function() {
-    var players = gameState.players
-    var playerInfo = [socket.id, players[socket.id].isReady]
-    console.log(gameState)
-    io.sockets.emit('player_disconnected', playerInfo)
-    delete players[socket.id]
-    if (players == {}) {
-      gameState.hasStarted = false
-    }
-  });
-});
+//
+// // makes a gameState JSON that holds players and game info
+// var gameState = {};
+// gameState["players"] = {};
+// gameState["hasStarted"] = false;
+// var players =  gameState.players
+// var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
+// var colorCounter = 0
+//
+// // Add the WebSocket handlers
+// io.on('connection', function(socket) {
+//   var players = gameState.players
+//   socket.on('NameSubmitted', function(username){
+//     players[socket.id]["name"] = username
+//   })
+//   // when a player clicks their ready button
+//   socket.on('playerReady', function()
+//   {
+//
+//   });
+//   // creates a new player when they join
+//   var color_in = colors[colorCounter]
+//   players[socket.id] = {
+//     player_progress: 0,
+//     isReady : false,
+//     win : false,
+//     isPlaying: true,
+//     color : color_in
+//   };
+//   colorCounter = (colorCounter + 1) % 5
+//   // doesn't let player participate if the game has started
+//   // hasStarted -> countdown has begin (all present players are ready)
+//   if (gameState.hasStarted) {
+//     players[socket.id].isPlaying = false;
+//   }
+//
+//   // emits all players data to update clients progress bars when a new player connects
+//
+//   // updates all players progress in players JSON (60 times/sec)
+//   socket.on('progressUpdate', function(data) {
+//     var player = players[socket.id] || {};
+//     player.player_progress = data.progress;
+//   });
+//
+// });
+//
+// // sends game state to clients to update progress bars (60 times/sec)
+// setInterval(function() {
+//   io.sockets.emit('state', gameState);
+// }, 1000 / 60);
+//

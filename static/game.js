@@ -7,6 +7,14 @@ socket.on('JoinedARoom', function(roomCode) {
   console.log(roomCode)
 });
 
+socket.on("deletePlayerInTable", function(idAndRoomCode){
+  var id = idAndRoomCode[0]
+  var roomCode = idAndRoomCode[1]
+  var trID = id + "-tr"
+  var trIDElement = document.getElementById(trID)
+  trIDElement.remove()
+})
+
 socket.on('playerTableUpdate', function(game){
   //console.log(game)
   var players = game["players"]
@@ -64,6 +72,7 @@ socket.on('createProgressBar', function(playerInfo) {
 
   //all progress bar content, breakdown of divs is above
   var outMostDiv = document.createElement("DIV")
+  outMostDiv.setAttribute("id", id + "-omd")
   outMostDiv.setAttribute("class", "col-md-11")
 
   var outDiv = document.createElement("DIV")
@@ -80,6 +89,13 @@ socket.on('createProgressBar', function(playerInfo) {
 
   progress_bars.appendChild(label)
   progress_bars.appendChild(outMostDiv)
+})
+
+socket.on('deleteProgressBar', function(id) {
+  var outMostDiv = document.getElementById(id + "-omd")
+  var label = document.getElementById(id + "-tag")
+  label.remove()
+  outMostDiv.remove()
 })
 
 function readyBttnClick() {
