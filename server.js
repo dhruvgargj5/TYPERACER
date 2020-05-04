@@ -7,7 +7,7 @@ var server = http.Server(app);
 var io = socketIO(server);
 var games = {}
 var colors = ["danger", "success", "primary", "warning"]
-var counter = 0
+var colorCounter = 0
 // var colors =
 // {
 //   "red" : {"progBar" :"bg-danger" , "text" :  "text-danger"},
@@ -16,22 +16,22 @@ var counter = 0
 //   "yellow" : {"progBar" : "bg-warning" , "text" :  "text-warning"},
 // }
 
-games {
-  room-1: {
-    hasStarted: true
-    players: {
-      id1: {
-        //player info
-      },
-      id2: {
-        //player info
-      }
-    }
-  }
-  room-2: {
-
-  }
-}
+// games {
+//   room-1: {
+//     hasStarted: true
+//     players: {
+//       id1: {
+//         //player info
+//       },
+//       id2: {
+//         //player info
+//       }
+//     }
+//   }
+//   room-2: {
+//
+//   }
+// }
 
 
 app.set('port', 5000);
@@ -48,36 +48,15 @@ server.listen(5000, function() {
 });
 
 
-
-
-
 var roomNo = 0
 io.on("connection", function(socket){
-  createRoom(socket)
-  counter = (counter + 1) % 4
+  addPersonToRoom(socket)
+  colorCounter = (colorCounter + 1) % 4
+  console.log(games)
 });
 
-//playerTable update
-//players are populated
-function newConnection(socket,roomCode){
-  var game = games[roomCode]
-  var players = game.players
-  players[socket.id] = {
-    name : "Anonymous Racer",
-    player_progress: 0,
-    finishingPlace : 0,
-    color : colors[counter],
-    isReady : false,
-    wpm : 0,
-    accuracy : 0
-  };
-  console.log(games)
-}
-
-
-
 //creates game state object
-function createRoom(socket){
+function addPersonToRoom(socket){
   //Cases
   //Attempt to join a room that has < 4
   //Attempt to join a room that has 4 or more
@@ -87,16 +66,36 @@ function createRoom(socket){
       //"creates" a new room
       roomNo++
       roomCode = "room-" + roomNo
-      games[roomCode] = {
-        hasStarted: false,
-        players: {}
-      }
   }
+
   socket.join(roomCode)
-  newConnection(socket,roomCode)
+  //if room doesn't exist in JSON
+  if(games[roomCode] == null){
+    games[roomCode] = {
+      hasStarted: false,
+      players: {}
+    }
+  }
+
+  addPersonToJSON(socket, roomCode)
   io.sockets.in(roomCode).emit('roomIsJoined',roomCode)
 }
 
+//playerTable update
+//players are populated
+function addPersonToJSON(socket, roomCode){
+  var game = games[roomCode]
+  var players = game.players
+  players[socket.id] = {
+    name : "Anonymous Racer",
+    player_progress: 0,
+    finishingPlace : 0,
+    color : colors[colorCounter],
+    isReady : false,
+    wpm : 0,
+    accuracy : 0
+  };
+}
 
 
 
@@ -109,7 +108,7 @@ gameState["players"] = {};
 gameState["hasStarted"] = false;
 var players =  gameState.players
 var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
-var counter = 0
+var colorCounter = 0
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
@@ -146,7 +145,7 @@ io.on('connection', function(socket) {
     }
   });
   // creates a new player when they join
-  var color_in = colors[counter]
+  var color_in = colors[colorCounter]
   players[socket.id] = {
     player_progress: 0,
     isReady : false,
@@ -154,7 +153,7 @@ io.on('connection', function(socket) {
     isPlaying: true,
     color : color_in
   };
-  counter = (counter + 1) % 5
+  colorCounter = (colorCounter + 1) % 5
   // doesn't let player participate if the game has started
   // hasStarted -> countdown has begin (all present players are ready)
   if (gameState.hasStarted) {
