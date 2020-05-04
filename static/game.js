@@ -1,30 +1,49 @@
 var socket = io();
 
+var room;
+
+socket.on('JoinedARoom', function(roomCode) {
+  room = roomCode
+  console.log(roomCode)
+});
+
 function readyBttnClick() {
   console.log("someone clicked the ready button")
-    var namein = document.getElementById('name_in')
-    var username = namein.value
-    var readyUp = document.getElementById('readyButton')
-    var errormessage = document.getElementById('name_feedback')
-    if (username == "") {
-      errormessage.setAttribute("class", "invalid-feedback")
-      errormessage.innerHTML = "Please enter a name to continue"
-      namein.setAttribute("class", "form-control is-invalid mr-sm-2")
-    }
-    if (username != "") {
-      errormessage.setAttribute("class", "valid-feedback")
-      namein.setAttribute("class", "form-control is-valid mr-sm-2")
-      errormessage.innerHTML = "Looks good!"
-      readyUp.remove()
-      namein.remove()
-      var message = document.createElement("H5")
-      message.innerHTML = "Type fast " + username
-      document.getElementById("nameSpace").appendChild(message)
-      socket.emit("NameSubmitted", username)
-      socket.emit('playerReady')
-      console.log("someone clicked the button")
-    }
+  var namein = document.getElementById('name_in')
+  var username = namein.value
+  var readyUp = document.getElementById('readyButton')
+  var errormessage = document.getElementById('name_feedback')
+  if (username == "") {
+    errormessage.setAttribute("class", "invalid-feedback")
+    errormessage.innerHTML = "Please enter a name to continue"
+    namein.setAttribute("class", "form-control is-invalid mr-sm-2")
+  }
+  if (username != "") {
+    errormessage.setAttribute("class", "valid-feedback")
+    namein.setAttribute("class", "form-control is-valid mr-sm-2")
+    errormessage.innerHTML = "Looks good!"
+    readyUp.remove()
+    namein.remove()
+    var message = document.createElement("H5")
+    message.innerHTML = "Type fast " + username
+    document.getElementById("nameSpace").appendChild(message)
+    usernameAndRoom = [username, room]
+    socket.emit("playerReady", usernameAndRoom)
+    console.log("someone clicked the button")
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 setInterval(function() {
   //gets the progress from display.js
   var my_progress = {
@@ -154,7 +173,7 @@ socket.on('player_disconnected',function(playerInfo) {
 
 //Starts the countdown (to the game) timer
 socket.on("gameStart", function (){
-  console.log("game has started")
+  console.log("THE GAME HAS STARTED!")
   startCountdown()
 });
 
@@ -185,8 +204,3 @@ function startCountdown(){
   }
 }, 1000);
 }
-
-
-socket.on("roomIsJoined", function(roomCode){
-  console.log("You have joined  " + roomCode)
-})

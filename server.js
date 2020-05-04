@@ -5,6 +5,7 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
+
 var games = {}
 var colors = ["danger", "success", "primary", "warning"]
 var colorCounter = 0
@@ -52,6 +53,9 @@ var roomNo = 0
 io.on("connection", function(socket){
   addPersonToRoom(socket)
   colorCounter = (colorCounter + 1) % 4
+  socket.on('playerReady', function(usernameAndRoom){
+      readyUp(socket, usernameAndRoom)
+  })
   console.log(games)
 });
 
@@ -61,14 +65,16 @@ function addPersonToRoom(socket){
   //Attempt to join a room that has < 4
   //Attempt to join a room that has 4 or more
   var roomCode = "room-" + roomNo
-  if(io.nsps['/'].adapter.rooms["room-"+roomNo] &&
-    io.nsps['/'].adapter.rooms["room-" + roomNo].length >= 4){
+  if(io.nsps['/'].adapter.rooms[roomCode] &&
+    (io.nsps['/'].adapter.rooms[roomCode].length >= 4 ||
+    games[roomCode].hasStarted)){
       //"creates" a new room
       roomNo++
       roomCode = "room-" + roomNo
   }
 
   socket.join(roomCode)
+  socket.emit('JoinedARoom', roomCode)
   //if room doesn't exist in JSON
   if(games[roomCode] == null){
     games[roomCode] = {
@@ -76,9 +82,7 @@ function addPersonToRoom(socket){
       players: {}
     }
   }
-
   addPersonToJSON(socket, roomCode)
-  io.sockets.in(roomCode).emit('roomIsJoined',roomCode)
 }
 
 //playerTable update
@@ -95,6 +99,42 @@ function addPersonToJSON(socket, roomCode){
     wpm : 0,
     accuracy : 0
   };
+}
+
+function readyUp(socket, usernameAndRoom) {
+  //updates name
+  var username = usernameAndRoom[0]
+  var room = usernameAndRoom[1]
+  var players = games[room]["players"]
+  var player = players[socket.id]
+  player["name"] = username
+
+
+  //checks ready status
+  // if they haven't already clicked it
+  if(player.isReady == false)
+  {
+    // display player connected message
+    player.isReady = true
+    // var message = players[socket.id].name + " is ready.<br>"
+    // io.sockets.emit("otherPlayerReady", message)
+  }
+
+  // checks if everyone is ready
+  var allReady = true
+  for (var id in players){
+    if (players.hasOwnProperty(id)){
+      var ready = players[id].isReady
+      if (!ready){
+        allReady = false
+      }
+    }
+  }
+  // if everyone is ready->hasStarted to true and emit gameStart
+  if(allReady){
+    games[room]["hasStarted"] = true;
+    io.in(room).emit('gameStart')
+  }
 }
 
 
@@ -119,30 +159,7 @@ io.on('connection', function(socket) {
   // when a player clicks their ready button
   socket.on('playerReady', function()
   {
-    // if they haven't already clicked it
-    if(players[socket.id].isReady == false)
-    {
-      // display player connected message
-      players[socket.id].isReady = true
-      // var message = players[socket.id].name + " is ready.<br>"
-      // io.sockets.emit("otherPlayerReady", message)
-    }
 
-    // checks if everyone is ready
-    var allReady = true
-    for (var id in players){
-      if (players.hasOwnProperty(id)){
-        var ready = players[id].isReady
-        if (!ready){
-          allReady = false
-        }
-      }
-    }
-    // if everyone is ready->hasStarted to true and emit gameStart
-    if(allReady){
-      gameState.hasStarted = true;
-      io.sockets.emit('gameStart')
-    }
   });
   // creates a new player when they join
   var color_in = colors[colorCounter]
