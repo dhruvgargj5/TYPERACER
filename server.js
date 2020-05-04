@@ -42,7 +42,8 @@ io.on("connection", function(socket){
     socket.leave(roomCode)
     var leavingPlayerReady = games[roomCode]["players"][socket.id].isReady
     delete games[roomCode]["players"][socket.id]
-    if (games[roomCode]["players"] == {}) {
+    if (isEmpty(games[roomCode]["players"])) {
+      console.log("no players present")
       delete games[roomCode]
       roomNo++
     }
@@ -53,10 +54,13 @@ io.on("connection", function(socket){
         io.in(roomCode).emit('deleteProgressBar', socket.id)
       }
     }
+    console.log("Disconnect: ")
+    console.log(games)
   });
 
   setInterval(function() {
-    if (games[roomCode].hasStarted) {
+    if (games.hasOwnProperty(roomCode) &&
+        games[roomCode].hasStarted) {
       io.sockets.emit('updateProgressBars', games[roomCode].players);
     }
    }, 1000 / 60);
@@ -65,6 +69,7 @@ io.on("connection", function(socket){
      var player = games[roomCode]["players"][socket.id];
      player.player_progress = data.progress;
    });
+   console.log("Connect:")
   console.log(games)
 });
 
@@ -166,7 +171,13 @@ function checkReady(room) {
   }
 }
 
-
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 
 
 
