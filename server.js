@@ -6,7 +6,6 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 var games = {}
-var gameState = {}
 var colors = ["danger", "success", "primary", "warning"]
 var counter = 0
 // var colors =
@@ -17,6 +16,22 @@ var counter = 0
 //   "yellow" : {"progBar" : "bg-warning" , "text" :  "text-warning"},
 // }
 
+games {
+  room-1: {
+    hasStarted: true
+    players: {
+      id1: {
+        //player info
+      },
+      id2: {
+        //player info
+      }
+    }
+  }
+  room-2: {
+
+  }
+}
 
 
 app.set('port', 5000);
@@ -72,14 +87,12 @@ function createRoom(socket){
       //"creates" a new room
       roomNo++
       roomCode = "room-" + roomNo
-      games[roomCode] = {}
-
-
+      games[roomCode] = {
+        hasStarted: false,
+        players: {}
+      }
   }
-  var game = games[roomCode]
   socket.join(roomCode)
-  game["players"] = {};
-  game["hasStarted"] = false;
   newConnection(socket,roomCode)
   io.sockets.in(roomCode).emit('roomIsJoined',roomCode)
 }
