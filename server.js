@@ -5,6 +5,18 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
+var games = {}
+var gameState = {}
+var colors = ["danger", "success", "primary", "warning"]
+var counter = 0
+// var colors =
+// {
+//   "red" : {"progBar" :"bg-danger" , "text" :  "text-danger"},
+//   "green" : {"progBar" : "bg-success", "text" : "text-success" },
+//   "blue" : {"progBar" : "bg-primary", "text" : "text-primary" },
+//   "yellow" : {"progBar" : "bg-warning" , "text" :  "text-warning"},
+// }
+
 
 
 app.set('port', 5000);
@@ -19,6 +31,64 @@ app.get('/', function(request, response) {
 server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
+
+
+
+
+
+var roomNo = 0
+io.on("connection", function(socket){
+  createRoom(socket)
+  counter = (counter + 1) % 4
+});
+
+//playerTable update
+//players are populated
+function newConnection(socket,roomCode){
+  var game = games[roomCode]
+  var players = game.players
+  players[socket.id] = {
+    name : "Anonymous Racer",
+    player_progress: 0,
+    finishingPlace : 0,
+    color : colors[counter],
+    isReady : false,
+    wpm : 0,
+    accuracy : 0
+  };
+  console.log(games)
+}
+
+
+
+//creates game state object
+function createRoom(socket){
+  //Cases
+  //Attempt to join a room that has < 4
+  //Attempt to join a room that has 4 or more
+  var roomCode = "room-" + roomNo
+  if(io.nsps['/'].adapter.rooms["room-"+roomNo] &&
+    io.nsps['/'].adapter.rooms["room-" + roomNo].length >= 4){
+      //"creates" a new room
+      roomNo++
+      roomCode = "room-" + roomNo
+      games[roomCode] = {}
+
+
+  }
+  var game = games[roomCode]
+  socket.join(roomCode)
+  game["players"] = {};
+  game["hasStarted"] = false;
+  newConnection(socket,roomCode)
+  io.sockets.in(roomCode).emit('roomIsJoined',roomCode)
+}
+
+
+
+
+
+
 
 // makes a gameState JSON that holds players and game info
 var gameState = {};

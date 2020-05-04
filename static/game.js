@@ -185,3 +185,8 @@ function startCountdown(){
   }
 }, 1000);
 }
+
+
+socket.on("roomIsJoined", function(roomCode){
+  console.log("You have joined  " + roomCode)
+})
