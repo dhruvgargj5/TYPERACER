@@ -11,8 +11,6 @@ var colorCounter = 0
 var roomNo = 0
 
 
-
-
 app.set('port', 5000);
 app.use('/static', express.static('./static/'));
 
@@ -39,6 +37,7 @@ io.on("connection", function(socket){
     io.in(roomCode).emit('createProgressBar', playerInfo)
   })
 
+
   socket.on('disconnect', function() {
     socket.leave(roomCode)
     var leavingPlayerReady = games[roomCode]["players"][socket.id].isReady
@@ -55,6 +54,17 @@ io.on("connection", function(socket){
       }
     }
   });
+
+  setInterval(function() {
+    if (games[roomCode].hasStarted) {
+      io.sockets.emit('updateProgressBars', games[roomCode].players);
+    }
+   }, 1000 / 60);
+
+   socket.on('progressUpdate', function(data) {
+     var player = games[roomCode]["players"][socket.id];
+     player.player_progress = data.progress;
+   });
   console.log(games)
 });
 
@@ -208,7 +218,5 @@ function checkReady(room) {
 // });
 //
 // // sends game state to clients to update progress bars (60 times/sec)
-// setInterval(function() {
-//   io.sockets.emit('state', gameState);
-// }, 1000 / 60);
+
 //

@@ -124,6 +124,26 @@ function readyBttnClick() {
   }
 }
 
+socket.on('updateProgressBars', function (players) {
+  for (var id in players) {
+    if (players.hasOwnProperty(id)) {
+      var player_progress_bar = document.getElementById(id)
+      var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+      player_progress_bar.setAttribute("style", progressBarStyle)
+    }
+  }
+})
+
+setInterval(function() {
+  //gets the progress from display.js
+  var my_progress = {
+    progress: getProgress()
+  }
+  //emits the progess 60x/second
+  socket.emit('progressUpdate', my_progress);
+}, 1000 / 60);
+
+
 // Get the input field
 var input = document.getElementById("name_in");
 
@@ -140,23 +160,43 @@ input.addEventListener("keydown", function(event) {
   }
 });
 
+//Starts the countdown (to the game) timer
+socket.on("gameStart", function (){
+  console.log("THE GAME HAS STARTED!")
+  startCountdown()
+});
 
+//The countdown (to the game) timer is started. This is the "Start in " timer.
+//Prints "GAME STARTED" to client
+//Makes the client's text box NON-readonly. Client can now enter text
+function startCountdown(){
+//credit W3 Schools
+  var curr = 0
+  var x = setInterval(function() {
 
+  // Get today's date and time
+  // Find the distance between now and the count down date
+  var distance = 10000 - curr;
+  curr += 1000
+  // Time calculations for days, hours, minutes and seconds
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-
-
-
-
-
-
-setInterval(function() {
-  //gets the progress from display.js
-  var my_progress = {
-    progress: getProgress()
+  // Display the result in the element with id="demo"
+  document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
+  // If the count down is finished, write some text
+  //start the GAME
+  if (distance <= 0) {
+    clearInterval(x);
+    document.getElementById("startTimer").innerHTML = "GAME STARTED";
+    startTimer()
+    document.getElementById("in").removeAttribute('readonly')
   }
-  //emits the progess 60x/second
-  socket.emit('progressUpdate', my_progress);
-}, 1000 / 60);
+}, 1000);
+}
+
+
+
+
 
 //RECEIVE FROM SERVER: Creates new player's progress bars and gives the new
 //player who is connected who all is ready
@@ -263,51 +303,16 @@ setInterval(function() {
 
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 //prints that a player has disconnected
-socket.on('player_disconnected',function(playerInfo) {
-  if (playerInfo[1]) {
-    var toBeDeletedBar = document.getElementById(playerInfo[0])
-    var toBeDeletedLabel = document.getElementById(playerInfo[0] + "-tag")
-    var gameInfo = document.getElementById('gameInfo')
-    toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
-    toBeDeletedLabel.remove()
-  }
-
-  var toBeDeletedRow = document.getElementById(playerInfo[0] + "-tr")
-  var table = document.getElementById("playerInfo")
-  table.removeChild(toBeDeletedRow)
-});
-
-
-//Starts the countdown (to the game) timer
-socket.on("gameStart", function (){
-  console.log("THE GAME HAS STARTED!")
-  startCountdown()
-});
-
-//The countdown (to the game) timer is started. This is the "Start in " timer.
-//Prints "GAME STARTED" to client
-//Makes the client's text box NON-readonly. Client can now enter text
-function startCountdown(){
-//credit W3 Schools
-  var curr = 0
-  var x = setInterval(function() {
-
-  // Get today's date and time
-  // Find the distance between now and the count down date
-  var distance = 10000 - curr;
-  curr += 1000
-  // Time calculations for days, hours, minutes and seconds
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  // Display the result in the element with id="demo"
-  document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
-  // If the count down is finished, write some text
-  //start the GAME
-  if (distance <= 0) {
-    clearInterval(x);
-    document.getElementById("startTimer").innerHTML = "GAME STARTED";
-    startTimer()
-    document.getElementById("in").removeAttribute('readonly')
-  }
-}, 1000);
-}
+// socket.on('player_disconnected',function(playerInfo) {
+//   if (playerInfo[1]) {
+//     var toBeDeletedBar = document.getElementById(playerInfo[0])
+//     var toBeDeletedLabel = document.getElementById(playerInfo[0] + "-tag")
+//     var gameInfo = document.getElementById('gameInfo')
+//     toBeDeletedBar.parentNode.parentNode.removeChild(toBeDeletedBar.parentNode)
+//     toBeDeletedLabel.remove()
+//   }
+//
+//   var toBeDeletedRow = document.getElementById(playerInfo[0] + "-tr")
+//   var table = document.getElementById("playerInfo")
+//   table.removeChild(toBeDeletedRow)
+// });
