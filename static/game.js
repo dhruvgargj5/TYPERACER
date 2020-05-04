@@ -7,6 +7,81 @@ socket.on('JoinedARoom', function(roomCode) {
   console.log(roomCode)
 });
 
+socket.on('playerTableUpdate', function(game){
+  //console.log(game)
+  var players = game["players"]
+  for (var id in players) {
+    if (players.hasOwnProperty(id)) {
+      var trID = id + "-tr"
+      var playerTable = document.getElementById("playerInfo")
+      var td1ID = id + "-td1"
+      var td2ID = id + "-td2"
+
+      if(document.getElementById(trID) == null){
+        var tr = document.createElement("TR")
+        tr.setAttribute("id", trID)
+        var td1 = document.createElement("TD")
+        var td2 = document.createElement("TD")
+        td1.setAttribute("id",td1ID)
+        td2.setAttribute("id",td2ID)
+        tr.appendChild(td1)
+        tr.appendChild(td2)
+        playerTable.appendChild(tr)
+      }
+      else{
+        var td1 = document.getElementById(td1ID)
+        var td2 = document.getElementById(td2ID)
+      }
+      td1.innerHTML = players[id].name
+      if(players[id].isReady == false){
+        td2.innerHTML = "Not ready"
+      }
+      else{
+        td2.innerHTML = "Ready!"
+      }
+    }
+  }
+})
+
+socket.on('createProgressBar', function(playerInfo) {
+  var id = playerInfo[0]
+  var player = playerInfo[1]
+  var color = player.color
+  //if player is ready, is playing, and they don't have a prog bar
+
+  //progress_bars is the div that will contain all progress bars
+  var progress_bars = document.getElementById("progress_bars")
+  //creates div that has prog bar and its label
+  // var progressbarwlabel = document.createElement("DIV")
+  // progressbarwlabel.setAttribute("id", id + "-progbarandlabel")
+  // progressbarwlabel.setAttribute("class", "col-md-12")
+
+  //label for prog bar
+  var label = document.createElement("PARAGRAPH")
+  label.setAttribute("class", "col-md-1 " + "text-" + color)
+  label.setAttribute("id", id + "-tag")
+  label.innerHTML = player.name
+
+  //all progress bar content, breakdown of divs is above
+  var outMostDiv = document.createElement("DIV")
+  outMostDiv.setAttribute("class", "col-md-11")
+
+  var outDiv = document.createElement("DIV")
+  outDiv.setAttribute("class", "progress active mb-2")
+  outDiv.setAttribute("style", "height: 35px")
+  outMostDiv.appendChild(outDiv)
+  var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar bg-" + color
+  var innerDiv = document.createElement("DIV")
+  innerDiv.setAttribute("id", id)
+  innerDiv.setAttribute("class", classAttribute)
+  innerDiv.setAttribute("role", "progressbar")
+  innerDiv.setAttribute("style", "width: 0%;")
+  outDiv.appendChild(innerDiv)
+
+  progress_bars.appendChild(label)
+  progress_bars.appendChild(outMostDiv)
+})
+
 function readyBttnClick() {
   console.log("someone clicked the ready button")
   var namein = document.getElementById('name_in')
@@ -33,7 +108,21 @@ function readyBttnClick() {
   }
 }
 
+// Get the input field
+var input = document.getElementById("name_in");
 
+// Execute a function when the user releases a key on the keyboard
+input.addEventListener("keydown", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+
+  if (event.keyCode === 13) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    console.log("someone hit enter!")
+    readyBttnClick()
+  }
+});
 
 
 
@@ -60,6 +149,8 @@ setInterval(function() {
 //This iterates through the player's object and, via player ID, creates a
 //progress bar for each player as well as printing who's ready
 //The progress bar is as follows:
+//                 <label>
+//                 </label>
 // outMostDiv -- > <div class = "col-mod-11">
 // outDiv -- >       <div class = "progress active mb-2" style = "height: 35px">
 // innerDiv -- >         <div class = "progress-bar progress-bar-striped pbar COLOR"
@@ -70,89 +161,89 @@ setInterval(function() {
 //RECEIVE FROM SERVER 60x/second: creates and updates ALL player's progress bars
 //as well as their ready status
 
-socket.on('state', function(gameState) {
-  var players = gameState.players
-  for (var id in players) {
-    if (players.hasOwnProperty(id)) {
-      //if player is ready, is playing, and they don't have a prog bar
-
-      //progress_bars is the div that will contain all progress bars
-      var progress_bars = document.getElementById("progress_bars")
-
-      if (players[id].isReady && players[id].isPlaying &&
-          (document.getElementById(id) == null)){
-            //label for prog bar
-            var label = document.createElement("PARAGRAPH")
-            label.setAttribute("class", "col-md-1")
-            label.setAttribute("id", id + "-tag")
-            label.innerHTML = players[id].name
-
-            //all progress bar content, breakdown of divs is above
-            var outMostDiv = document.createElement("DIV")
-            outMostDiv.setAttribute("class", "col-md-11")
-
-            var outDiv = document.createElement("DIV")
-            outDiv.setAttribute("class", "progress active mb-2")
-            outDiv.setAttribute("style", "height: 35px")
-            outMostDiv.appendChild(outDiv)
-            var color = players[id].color
-            var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
-            var innerDiv = document.createElement("DIV")
-            innerDiv.setAttribute("id", id)
-            innerDiv.setAttribute("class", classAttribute)
-            innerDiv.setAttribute("role", "progressbar")
-            innerDiv.setAttribute("style", "width: 0%;")
-            outDiv.appendChild(innerDiv)
-            progress_bars.appendChild(label)
-            progress_bars.appendChild(outMostDiv)
-
-          }
-
-      var player_progress_bar = document.getElementById(id)
-      //updates progress bar
-      if (gameState.hasStarted && player_progress_bar != null){
-        var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
-        player_progress_bar.setAttribute("style", progressBarStyle)
-      }
-
-      //update if players are ready, disconnected, waiting to ready up
-      var trID = id + "-tr"
-      var playerTable = document.getElementById("playerInfo")
-      var td1ID = id + "-td1"
-      var td2ID = id + "-td2"
-
-      if(document.getElementById(trID) == null){
-        var tr = document.createElement("TR")
-        tr.setAttribute("id", trID)
-        var td1 = document.createElement("TD")
-        var td2 = document.createElement("TD")
-        td1.setAttribute("id",td1ID)
-        td2.setAttribute("id",td2ID)
-        tr.appendChild(td1)
-        tr.appendChild(td2)
-        playerTable.appendChild(tr)
-      }
-      else{
-        var td1 = document.getElementById(td1ID)
-        var td2 = document.getElementById(td2ID)
-      }
-
-      if(players[id].name == null){
-        td1.innerHTML = "Anonymous Racer"
-      }
-      else{
-        td1.innerHTML = players[id].name
-      }
-      if(players[id].isReady == false){
-        td2.innerHTML = "Not ready"
-      }
-      else{
-        td2.innerHTML = "Ready!"
-      }
-
-    }
-  }
-});
+// socket.on('state', function(gameState) {
+//   var players = gameState.players
+//   for (var id in players) {
+//     if (players.hasOwnProperty(id)) {
+//       //if player is ready, is playing, and they don't have a prog bar
+//
+//       //progress_bars is the div that will contain all progress bars
+//       var progress_bars = document.getElementById("progress_bars")
+//
+//       if (players[id].isReady && players[id].isPlaying &&
+//           (document.getElementById(id) == null)){
+//             //label for prog bar
+//             var label = document.createElement("PARAGRAPH")
+//             label.setAttribute("class", "col-md-1")
+//             label.setAttribute("id", id + "-tag")
+//             label.innerHTML = players[id].name
+//
+//             //all progress bar content, breakdown of divs is above
+//             var outMostDiv = document.createElement("DIV")
+//             outMostDiv.setAttribute("class", "col-md-11")
+//
+//             var outDiv = document.createElement("DIV")
+//             outDiv.setAttribute("class", "progress active mb-2")
+//             outDiv.setAttribute("style", "height: 35px")
+//             outMostDiv.appendChild(outDiv)
+//             var color = players[id].color
+//             var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar " + color
+//             var innerDiv = document.createElement("DIV")
+//             innerDiv.setAttribute("id", id)
+//             innerDiv.setAttribute("class", classAttribute)
+//             innerDiv.setAttribute("role", "progressbar")
+//             innerDiv.setAttribute("style", "width: 0%;")
+//             outDiv.appendChild(innerDiv)
+//             progress_bars.appendChild(label)
+//             progress_bars.appendChild(outMostDiv)
+//
+//           }
+//
+//       var player_progress_bar = document.getElementById(id)
+//       //updates progress bar
+//       if (gameState.hasStarted && player_progress_bar != null){
+//         var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+//         player_progress_bar.setAttribute("style", progressBarStyle)
+//       }
+//
+//       //update if players are ready, disconnected, waiting to ready up
+//       var trID = id + "-tr"
+//       var playerTable = document.getElementById("playerInfo")
+//       var td1ID = id + "-td1"
+//       var td2ID = id + "-td2"
+//
+//       if(document.getElementById(trID) == null){
+//         var tr = document.createElement("TR")
+//         tr.setAttribute("id", trID)
+//         var td1 = document.createElement("TD")
+//         var td2 = document.createElement("TD")
+//         td1.setAttribute("id",td1ID)
+//         td2.setAttribute("id",td2ID)
+//         tr.appendChild(td1)
+//         tr.appendChild(td2)
+//         playerTable.appendChild(tr)
+//       }
+//       else{
+//         var td1 = document.getElementById(td1ID)
+//         var td2 = document.getElementById(td2ID)
+//       }
+//
+//       if(players[id].name == null){
+//         td1.innerHTML = "Anonymous Racer"
+//       }
+//       else{
+//         td1.innerHTML = players[id].name
+//       }
+//       if(players[id].isReady == false){
+//         td2.innerHTML = "Not ready"
+//       }
+//       else{
+//         td2.innerHTML = "Ready!"
+//       }
+//
+//     }
+//   }
+// });
 
 //RECEIVE FROM SERVER: deleting a disconnected player's progress bar
 //prints that a player has disconnected

@@ -51,13 +51,27 @@ server.listen(5000, function() {
 
 var roomNo = 0
 io.on("connection", function(socket){
-  addPersonToRoom(socket)
+  var roomCode = addPersonToRoom(socket)
+  //call playerTable update
+  updatePlayerTable(roomCode)
   colorCounter = (colorCounter + 1) % 4
   socket.on('playerReady', function(usernameAndRoom){
       readyUp(socket, usernameAndRoom)
+      updatePlayerTable(roomCode)
+      var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
+      io.in(roomCode).emit('createProgressBar', playerInfo)
   })
   console.log(games)
 });
+
+
+//playerTableUpdate function
+//  emit to a specifc room the whole gameState?
+// client side: they take the gameState and edit HTML
+
+function updatePlayerTable(roomCode) {
+  io.in(roomCode).emit('playerTableUpdate', games[roomCode])
+}
 
 //creates game state object
 function addPersonToRoom(socket){
@@ -83,6 +97,7 @@ function addPersonToRoom(socket){
     }
   }
   addPersonToJSON(socket, roomCode)
+  return roomCode
 }
 
 //playerTable update
@@ -108,6 +123,7 @@ function readyUp(socket, usernameAndRoom) {
   var players = games[room]["players"]
   var player = players[socket.id]
   player["name"] = username
+  console.log("PLAYER WHO READY UP NAME: " + player["name"])
 
 
   //checks ready status
