@@ -4,7 +4,7 @@ var room;
 
 socket.on('JoinedARoom', function(roomCode) {
   room = roomCode
-  console.log(roomCode)
+  console.log("RoomCode: " + roomCode)
 });
 
 socket.on("deletePlayerInTable", function(idAndRoomCode){

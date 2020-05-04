@@ -25,6 +25,7 @@ server.listen(5000, function() {
 });
 
 io.on("connection", function(socket){
+  console.log("NEW CONNECTION: ", socket.id)
   var roomCode = addPersonToRoom(socket)
   //call playerTable update
   updatePlayerTable(roomCode)
@@ -39,13 +40,18 @@ io.on("connection", function(socket){
 
 
   socket.on('disconnect', function() {
+    console.log("Disconnected: " + socket.id)
     socket.leave(roomCode)
     var leavingPlayerReady = games[roomCode]["players"][socket.id].isReady
     delete games[roomCode]["players"][socket.id]
     if (isEmpty(games[roomCode]["players"])) {
-      console.log("no players present")
       delete games[roomCode]
-      roomNo++
+      // console.log("Disconnect,  pre increment")
+      // console.log("RoomNo: " + roomNo)
+      // console.log("RoomCode: " + roomCode)
+      // console.log("Disconnect,  post increment")
+      // console.log("RoomNo: " + roomNo)
+      // console.log("RoomCode: " + roomCode)
     }
     else {
       checkReady(roomCode)
@@ -96,14 +102,17 @@ function addPersonToRoom(socket){
     (io.nsps['/'].adapter.rooms[roomCode].length >= 4 ||
     games[roomCode].hasStarted)){
       //"creates" a new room
+      //console.log("roomNo is incremented at addingPersonToRoom")
       roomNo++
       roomCode = "room-" + roomNo
+      // console.log("RoomNo: " + roomNo)
+      // console.log("RoomCode: " + roomCode)
   }
 
   socket.join(roomCode)
   socket.emit('JoinedARoom', roomCode)
   //if room doesn't exist in JSON
-  if(games[roomCode] == null){
+  if(!games.hasOwnProperty(roomCode)){
     games[roomCode] = {
       hasStarted: false,
       players: {}
