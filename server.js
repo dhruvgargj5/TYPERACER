@@ -15,6 +15,9 @@ app.use('/static', express.static('./static/'));
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'roomsPage.html'));
 });
+app.get('/type', function(request, response) {
+  response.sendFile(path.join(__dirname, 'typingPage.html'));
+});
 
 // Starts the server.
 server.listen(5000, function() {
