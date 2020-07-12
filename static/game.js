@@ -1,19 +1,41 @@
 var socket = io();
 
-var room;
-
-socket.on('JoinedARoom', function(roomCode) {
-  room = roomCode
-  console.log("RoomCode: " + roomCode)
+function joinRoom(roomID){
+  socket.emit("playerJoinedRoom", roomID)
+  console.log("Player joined room: " + roomID)
+  //open typingPage.HTML
+}
+function readyBttnClick() {
+  console.log("someone clicked the ready button")
+  var namein = document.getElementById('name_in')
+  var username = namein.value
+  var readyUp = document.getElementById('readyButton')
+  var errormessage = document.getElementById('name_feedback')
+  if (username == "") {
+    errormessage.setAttribute("class", "invalid-feedback")
+    errormessage.innerHTML = "Please enter a name to continue"
+    namein.setAttribute("class", "form-control is-invalid mr-sm-2")
+  }
+  if (username != "") {
+    errormessage.setAttribute("class", "valid-feedback")
+    namein.setAttribute("class", "form-control is-valid mr-sm-2")
+    errormessage.innerHTML = "Looks good!"
+    readyUp.remove()
+    namein.remove()
+    var message = document.createElement("H5")
+    message.innerHTML = "Type fast " + username
+    document.getElementById("nameSpace").appendChild(message)
+    usernameAndRoom = [username, room]
+    socket.emit("playerReady", usernameAndRoom)
+    console.log("someone clicked the button")
+  }
+}
+socket.on("lockRoom", function(roomID){
+  //update roomsPage.html and disable the button
+  console.log("received lockRoom request")
+  var button = document.getElementById(roomID)
+  button.setAttribute('disabled', true)
 });
-
-socket.on("deletePlayerInTable", function(idAndRoomCode){
-  var id = idAndRoomCode[0]
-  var roomCode = idAndRoomCode[1]
-  var trID = id + "-tr"
-  var trIDElement = document.getElementById(trID)
-  trIDElement.remove()
-})
 
 socket.on('playerTableUpdate', function(game){
   //console.log(game)
@@ -51,148 +73,219 @@ socket.on('playerTableUpdate', function(game){
   }
 })
 
-socket.on('createProgressBar', function(playerInfo) {
-  var id = playerInfo[0]
-  var player = playerInfo[1]
-  var color = player.color
-  //if player is ready, is playing, and they don't have a prog bar
-
-  //progress_bars is the div that will contain all progress bars
-  var progress_bars = document.getElementById("progress_bars")
-  //creates div that has prog bar and its label
-  // var progressbarwlabel = document.createElement("DIV")
-  // progressbarwlabel.setAttribute("id", id + "-progbarandlabel")
-  // progressbarwlabel.setAttribute("class", "col-md-12")
-
-  //label for prog bar
-  var label = document.createElement("PARAGRAPH")
-  label.setAttribute("class", "col-md-1 " + "text-" + color)
-  label.setAttribute("id", id + "-tag")
-  label.innerHTML = player.name
-
-  //all progress bar content, breakdown of divs is above
-  var outMostDiv = document.createElement("DIV")
-  outMostDiv.setAttribute("id", id + "-omd")
-  outMostDiv.setAttribute("class", "col-md-11")
-
-  var outDiv = document.createElement("DIV")
-  outDiv.setAttribute("class", "progress active mb-2")
-  outDiv.setAttribute("style", "height: 35px")
-  outMostDiv.appendChild(outDiv)
-  var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar bg-" + color
-  var innerDiv = document.createElement("DIV")
-  innerDiv.setAttribute("id", id)
-  innerDiv.setAttribute("class", classAttribute)
-  innerDiv.setAttribute("role", "progressbar")
-  innerDiv.setAttribute("style", "width: 0%;")
-  outDiv.appendChild(innerDiv)
-
-  progress_bars.appendChild(label)
-  progress_bars.appendChild(outMostDiv)
-})
-
-socket.on('deleteProgressBar', function(id) {
-  var outMostDiv = document.getElementById(id + "-omd")
-  var label = document.getElementById(id + "-tag")
-  label.remove()
-  outMostDiv.remove()
-})
-
-function readyBttnClick() {
-  console.log("someone clicked the ready button")
-  var namein = document.getElementById('name_in')
-  var username = namein.value
-  var readyUp = document.getElementById('readyButton')
-  var errormessage = document.getElementById('name_feedback')
-  if (username == "") {
-    errormessage.setAttribute("class", "invalid-feedback")
-    errormessage.innerHTML = "Please enter a name to continue"
-    namein.setAttribute("class", "form-control is-invalid mr-sm-2")
-  }
-  if (username != "") {
-    errormessage.setAttribute("class", "valid-feedback")
-    namein.setAttribute("class", "form-control is-valid mr-sm-2")
-    errormessage.innerHTML = "Looks good!"
-    readyUp.remove()
-    namein.remove()
-    var message = document.createElement("H5")
-    message.innerHTML = "Type fast " + username
-    document.getElementById("nameSpace").appendChild(message)
-    usernameAndRoom = [username, room]
-    socket.emit("playerReady", usernameAndRoom)
-    console.log("someone clicked the button")
-  }
-}
-
-socket.on('updateProgressBars', function (players) {
-  for (var id in players) {
-    if (players.hasOwnProperty(id)) {
-      var player_progress_bar = document.getElementById(id)
-      var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
-      player_progress_bar.setAttribute("style", progressBarStyle)
+socket.on('onConnection', function(games) {
+  for (var room in games){
+    if(!games[room]['isOpen']){
+      var roomButton = document.getElementById(room)
+      roomButton.setAttribute('disabled', true)
     }
   }
-})
-
-setInterval(function() {
-  //gets the progress from display.js
-  var my_progress = {
-    progress: getProgress()
-  }
-  //emits the progess 60x/second
-  socket.emit('progressUpdate', my_progress);
-}, 1000 / 60);
-
-
-// Get the input field
-var input = document.getElementById("name_in");
-
-// Execute a function when the user releases a key on the keyboard
-input.addEventListener("keydown", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
-
-  if (event.keyCode === 13) {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    // Trigger the button element with a click
-    console.log("someone hit enter!")
-    readyBttnClick()
-  }
 });
 
-//Starts the countdown (to the game) timer
-socket.on("gameStart", function (){
-  console.log("THE GAME HAS STARTED!")
-  startCountdown()
-});
 
-//The countdown (to the game) timer is started. This is the "Start in " timer.
-//Prints "GAME STARTED" to client
-//Makes the client's text box NON-readonly. Client can now enter text
-function startCountdown(){
-//credit W3 Schools
-  var curr = 0
-  var x = setInterval(function() {
 
-  // Get today's date and time
-  // Find the distance between now and the count down date
-  var distance = 10000 - curr;
-  curr += 1000
-  // Time calculations for days, hours, minutes and seconds
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Display the result in the element with id="demo"
-  document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
-  // If the count down is finished, write some text
-  //start the GAME
-  if (distance <= 0) {
-    clearInterval(x);
-    document.getElementById("startTimer").innerHTML = "GAME STARTED";
-    startTimer()
-    document.getElementById("in").removeAttribute('readonly')
-  }
-}, 1000);
-}
+
+
+//socket.on('JoinedARoom', function(roomCode) {
+//   room = roomCode
+//   console.log("RoomCode: " + roomCode)
+// });
+//
+// socket.on("deletePlayerInTable", function(idAndRoomCode){
+//   var id = idAndRoomCode[0]
+//   var roomCode = idAndRoomCode[1]
+//   var trID = id + "-tr"
+//   var trIDElement = document.getElementById(trID)
+//   trIDElement.remove()
+// })
+//
+// socket.on('playerTableUpdate', function(game){
+//   //console.log(game)
+//   var players = game["players"]
+//   for (var id in players) {
+//     if (players.hasOwnProperty(id)) {
+//       var trID = id + "-tr"
+//       var playerTable = document.getElementById("playerInfo")
+//       var td1ID = id + "-td1"
+//       var td2ID = id + "-td2"
+//
+//       if(document.getElementById(trID) == null){
+//         var tr = document.createElement("TR")
+//         tr.setAttribute("id", trID)
+//         var td1 = document.createElement("TD")
+//         var td2 = document.createElement("TD")
+//         td1.setAttribute("id",td1ID)
+//         td2.setAttribute("id",td2ID)
+//         tr.appendChild(td1)
+//         tr.appendChild(td2)
+//         playerTable.appendChild(tr)
+//       }
+//       else{
+//         var td1 = document.getElementById(td1ID)
+//         var td2 = document.getElementById(td2ID)
+//       }
+//       td1.innerHTML = players[id].name
+//       if(players[id].isReady == false){
+//         td2.innerHTML = "Not ready"
+//       }
+//       else{
+//         td2.innerHTML = "Ready!"
+//       }
+//     }
+//   }
+// })
+//
+// socket.on('createProgressBar', function(playerInfo) {
+//   console.log("create prog bar received")
+//   var id = playerInfo[0]
+//   var player = playerInfo[1]
+//   var color = player.color
+//   //if player is ready, is playing, and they don't have a prog bar
+//
+//   //progress_bars is the div that will contain all progress bars
+//   var progress_bars = document.getElementById("progress_bars")
+//   //creates div that has prog bar and its label
+//   // var progressbarwlabel = document.createElement("DIV")
+//   // progressbarwlabel.setAttribute("id", id + "-progbarandlabel")
+//   // progressbarwlabel.setAttribute("class", "col-md-12")
+//
+//   //label for prog bar
+//   var label = document.createElement("PARAGRAPH")
+//   label.setAttribute("class", "col-md-1 " + "text-" + color)
+//   label.setAttribute("id", id + "-tag")
+//   label.innerHTML = player.name
+//
+//   //all progress bar content, breakdown of divs is above
+//   var outMostDiv = document.createElement("DIV")
+//   outMostDiv.setAttribute("id", id + "-omd")
+//   outMostDiv.setAttribute("class", "col-md-11")
+//
+//   var outDiv = document.createElement("DIV")
+//   outDiv.setAttribute("class", "progress active mb-2")
+//   outDiv.setAttribute("style", "height: 35px")
+//   outMostDiv.appendChild(outDiv)
+//   var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar bg-" + color
+//   var innerDiv = document.createElement("DIV")
+//   innerDiv.setAttribute("id", id)
+//   innerDiv.setAttribute("class", classAttribute)
+//   innerDiv.setAttribute("role", "progressbar")
+//   innerDiv.setAttribute("style", "width: 0%;")
+//   outDiv.appendChild(innerDiv)
+//
+//   progress_bars.appendChild(label)
+//   progress_bars.appendChild(outMostDiv)
+// })
+//
+// socket.on('deleteProgressBar', function(id) {
+//   var outMostDiv = document.getElementById(id + "-omd")
+//   var label = document.getElementById(id + "-tag")
+//   label.remove()
+//   outMostDiv.remove()
+// })
+//
+// function readyBttnClick() {
+//   console.log("someone clicked the ready button")
+//   var namein = document.getElementById('name_in')
+//   var username = namein.value
+//   var readyUp = document.getElementById('readyButton')
+//   var errormessage = document.getElementById('name_feedback')
+//   if (username == "") {
+//     errormessage.setAttribute("class", "invalid-feedback")
+//     errormessage.innerHTML = "Please enter a name to continue"
+//     namein.setAttribute("class", "form-control is-invalid mr-sm-2")
+//   }
+//   if (username != "") {
+//     errormessage.setAttribute("class", "valid-feedback")
+//     namein.setAttribute("class", "form-control is-valid mr-sm-2")
+//     errormessage.innerHTML = "Looks good!"
+//     readyUp.remove()
+//     namein.remove()
+//     var message = document.createElement("H5")
+//     message.innerHTML = "Type fast " + username
+//     document.getElementById("nameSpace").appendChild(message)
+//     usernameAndRoom = [username, room]
+//     socket.emit("playerReady", usernameAndRoom)
+//     console.log("someone clicked the button")
+//   }
+// }
+//
+// function joinRoom(roomID){
+//   socket.emit("playerJoinedRoom", roomID)
+//   console.log("Player joined room: " + roomID)
+//     //emit to server that a player has joined room
+//     //receive  "playerJoined"
+//   //open typingPage.HTML
+// }
+// socket.on('updateProgressBars', function (players) {
+//   for (var id in players) {
+//     if (players.hasOwnProperty(id)) {
+//       var player_progress_bar = document.getElementById(id)
+//       var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+//       player_progress_bar.setAttribute("style", progressBarStyle)
+//     }
+//   }
+// })
+//
+// setInterval(function() {
+//   //gets the progress from display.js
+//   var my_progress = {
+//     progress: getProgress()
+//   }
+//   //emits the progess 60x/second
+//   socket.emit('progressUpdate', my_progress);
+// }, 1000 / 60);
+//
+//
+// // Get the input field
+// var input = document.getElementById("name_in");
+//
+// // Execute a function when the user releases a key on the keyboard
+// input.addEventListener("keydown", function(event) {
+//   // Number 13 is the "Enter" key on the keyboard
+//
+//   if (event.keyCode === 13) {
+//     // Cancel the default action, if needed
+//     event.preventDefault();
+//     // Trigger the button element with a click
+//     console.log("someone hit enter!")
+//     readyBttnClick()
+//   }
+// });
+//
+// //Starts the countdown (to the game) timer
+// socket.on("gameStart", function (){
+//   console.log("THE GAME HAS STARTED!")
+//   startCountdown()
+// });
+//
+// //The countdown (to the game) timer is started. This is the "Start in " timer.
+// //Prints "GAME STARTED" to client
+// //Makes the client's text box NON-readonly. Client can now enter text
+// function startCountdown(){
+// //credit W3 Schools
+//   var curr = 0
+//   var x = setInterval(function() {
+//
+//   // Get today's date and time
+//   // Find the distance between now and the count down date
+//   var distance = 10000 - curr;
+//   curr += 1000
+//   // Time calculations for days, hours, minutes and seconds
+//   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+//
+//   // Display the result in the element with id="demo"
+//   document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
+//   // If the count down is finished, write some text
+//   //start the GAME
+//   if (distance <= 0) {
+//     clearInterval(x);
+//     document.getElementById("startTimer").innerHTML = "GAME STARTED";
+//     startTimer()
+//     document.getElementById("in").removeAttribute('readonly')
+//   }
+// }, 1000);
+// }
 
 
 

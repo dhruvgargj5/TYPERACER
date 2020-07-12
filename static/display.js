@@ -140,17 +140,6 @@ function update_wpm() {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // Credit: Mateusz Rybczonec
 
 const FULL_DASH_ARRAY = 283;
