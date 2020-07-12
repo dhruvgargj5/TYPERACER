@@ -38,7 +38,7 @@ socket.on("lockRoom", function(roomID){
 });
 
 socket.on('playerTableUpdate', function(game){
-  //console.log(game)
+  console.log("received playerTableUpdate")
   var players = game["players"]
   for (var id in players) {
     if (players.hasOwnProperty(id)) {
