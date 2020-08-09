@@ -78,6 +78,47 @@ socket.on('playerTableUpdate', function(game){
   }
 })
 
+socket.on('createProgressBar', function(playerInfo) {
+  console.log("create prog bar received")
+  var id = playerInfo[0]
+  var player = playerInfo[1]
+  var color = player.color
+  //if player is ready, is playing, and they don't have a prog bar
+
+  //progress_bars is the div that will contain all progress bars
+  var progress_bars = document.getElementById("progress_bars")
+  //creates div that has prog bar and its label
+  // var progressbarwlabel = document.createElement("DIV")
+  // progressbarwlabel.setAttribute("id", id + "-progbarandlabel")
+  // progressbarwlabel.setAttribute("class", "col-md-12")
+
+  //label for prog bar
+  var label = document.createElement("PARAGRAPH")
+  label.setAttribute("class", "col-md-1 " + "text-" + color)
+  label.setAttribute("id", id + "-tag")
+  label.innerHTML = player.name
+
+  //all progress bar content, breakdown of divs is above
+  var outMostDiv = document.createElement("DIV")
+  outMostDiv.setAttribute("id", id + "-omd")
+  outMostDiv.setAttribute("class", "col-md-11")
+
+  var outDiv = document.createElement("DIV")
+  outDiv.setAttribute("class", "progress active mb-2")
+  outDiv.setAttribute("style", "height: 35px")
+  outMostDiv.appendChild(outDiv)
+  var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar bg-" + color
+  var innerDiv = document.createElement("DIV")
+  innerDiv.setAttribute("id", id)
+  innerDiv.setAttribute("class", classAttribute)
+  innerDiv.setAttribute("role", "progressbar")
+  innerDiv.setAttribute("style", "width: 0%;")
+  outDiv.appendChild(innerDiv)
+
+  progress_bars.appendChild(label)
+  progress_bars.appendChild(outMostDiv)
+})
+
 socket.on('onConnection', function(games) {
   for (var room in games){
     if(!games[room]['isOpen']){
@@ -220,46 +261,7 @@ var typingPage = `<body>
 //   }
 // })
 //
-// socket.on('createProgressBar', function(playerInfo) {
-//   console.log("create prog bar received")
-//   var id = playerInfo[0]
-//   var player = playerInfo[1]
-//   var color = player.color
-//   //if player is ready, is playing, and they don't have a prog bar
-//
-//   //progress_bars is the div that will contain all progress bars
-//   var progress_bars = document.getElementById("progress_bars")
-//   //creates div that has prog bar and its label
-//   // var progressbarwlabel = document.createElement("DIV")
-//   // progressbarwlabel.setAttribute("id", id + "-progbarandlabel")
-//   // progressbarwlabel.setAttribute("class", "col-md-12")
-//
-//   //label for prog bar
-//   var label = document.createElement("PARAGRAPH")
-//   label.setAttribute("class", "col-md-1 " + "text-" + color)
-//   label.setAttribute("id", id + "-tag")
-//   label.innerHTML = player.name
-//
-//   //all progress bar content, breakdown of divs is above
-//   var outMostDiv = document.createElement("DIV")
-//   outMostDiv.setAttribute("id", id + "-omd")
-//   outMostDiv.setAttribute("class", "col-md-11")
-//
-//   var outDiv = document.createElement("DIV")
-//   outDiv.setAttribute("class", "progress active mb-2")
-//   outDiv.setAttribute("style", "height: 35px")
-//   outMostDiv.appendChild(outDiv)
-//   var classAttribute = "progress-bar progress-bar-striped progress-bar-animated pbar bg-" + color
-//   var innerDiv = document.createElement("DIV")
-//   innerDiv.setAttribute("id", id)
-//   innerDiv.setAttribute("class", classAttribute)
-//   innerDiv.setAttribute("role", "progressbar")
-//   innerDiv.setAttribute("style", "width: 0%;")
-//   outDiv.appendChild(innerDiv)
-//
-//   progress_bars.appendChild(label)
-//   progress_bars.appendChild(outMostDiv)
-// })
+
 //
 // socket.on('deleteProgressBar', function(id) {
 //   var outMostDiv = document.getElementById(id + "-omd")
