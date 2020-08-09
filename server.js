@@ -26,6 +26,13 @@ server.listen(5000, function() {
 
 io.on('connection', function(socket){
   io.emit('onConnection', games)
+  socket.on('playerReady', function(usernameAndRoom){
+    console.log("player ready received from game")
+    readyUp(socket, usernameAndRoom)
+    updatePlayerTable(roomCode)
+    var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
+    io.in(roomCode).emit('createProgressBar', playerInfo)
+  })
   socket.on("playerJoinedRoom", function(roomID){
     //DO LATER check if roomID is in games, if not then it adds it
     //initialize games[roomID]['hasStarted'] = false
@@ -71,15 +78,6 @@ io.on('connection', function(socket){
     //should be similar to what we had before
   });
 });
-
-
-//   socket.on('playerReady', function(usernameAndRoom){
-//     console.log("player ready received from game")
-//     readyUp(socket, usernameAndRoom)
-//     updatePlayerTable(roomCode)
-//     var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
-//     io.in(roomCode).emit('createProgressBar', playerInfo)
-//   })
 
 
 
@@ -146,9 +144,9 @@ io.on('connection', function(socket){
 //playerTableUpdate function
 //  emit to a specifc room the whole gameState?
 // client side: they take the gameState and edit HTML
-// function updatePlayerTable(roomCode) {
-//   io.in(roomCode).emit('playerTableUpdate', games[roomCode])
-// }
+function updatePlayerTable(roomCode) {
+  io.in(roomCode).emit('playerTableUpdate', games[roomCode])
+}
 
 // //creates game state object
 // function addPersonToRoom(socket){

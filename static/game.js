@@ -4,7 +4,10 @@ function joinRoom(roomID){
   socket.emit("playerJoinedRoom", roomID)
   console.log("Player joined room: " + roomID)
   //open typingPage.HTML
+  document.body.innerHTML = ""
+  document.body.innerHTML = typingPage
 }
+
 function readyBttnClick() {
   console.log("someone clicked the ready button")
   var namein = document.getElementById('name_in')
@@ -82,8 +85,71 @@ socket.on('onConnection', function(games) {
   }
 });
 
+var typingPage = `<body>
+  <div class = "container mt-1">
+    <h1>TypeRacer</h1>
+  <br/>
 
 
+  <div id="nameSpace">
+    <form id="name_form" class="form-inline">
+        <input type="text" id="name_in" class="form-control mr-sm-2" placeholder="Name"/>
+        <button type="button" class="btn btn-danger" id = "readyButton" onclick = "readyBttnClick()">Ready</button>
+        <div id="name_feedback">
+        </div>
+    </form>
+  </div>
+  <br/>
+
+
+  <div class = "row">
+    <div class = "flex-md-column col-md-9">
+      <div id="progress_bars" class="row" >
+      </div>
+      <p id = "correct_text" class = "alert alert-info">Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.</p>
+        <div class="row">
+          <label for="in" class="col-md-2 col-form-label" >Type Here: </label>
+            <div class="input-group-prepend col-md-9">
+              <input type="text" id="in" class="form-control" readonly = true placeholder="you better type fast!"/>
+            </div>
+        <div class = "col-md-1">
+        <div id="app">
+        </div>
+        </div>
+        </div>
+    <br/>
+    <div class="row col-3">
+    <p id="wpm">wpm: </p>
+    </div>
+    </div>
+  <div class = "col-md-3">
+    <div id = "gameInfo">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Game Status</th>
+          </tr>
+        </thead>
+        <tbody id = "playerInfo">
+        </tbody>
+      </table>
+    </div>
+    <div id = "startTimer">
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="static/display.js"></script>
+  <script src="static/game.js"></script>
+  <script src="static/mark.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>`
 
 
 
