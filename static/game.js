@@ -29,11 +29,7 @@ function readyBttnClick() {
 
 //the issue is where we send data back to the server. that's where the socket ids differ
 socket.on('playerTableUpdate', function(game){
-<<<<<<< HEAD
   console.log(game)
-=======
-  console.log("received playerTableUpdate")
->>>>>>> 02497bd... latest
   var players = game["players"]
   for (var id in players) {
     if (players.hasOwnProperty(id)) {

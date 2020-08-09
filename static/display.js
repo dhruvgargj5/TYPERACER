@@ -14,6 +14,7 @@ var progress = 0;
 
 document.addEventListener("DOMContentLoaded", init);
 function init() {
+    console.log("IN DER")
     let txt = document.getElementById('in');
     txt.addEventListener('keypress', type);
     txt.addEventListener('keydown', backspace);
