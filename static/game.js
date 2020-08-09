@@ -1,7 +1,12 @@
+var socket = io();
 
+function joinRoom(roomID){
+  socket.emit("playerJoinedRoom", roomID)
+  console.log("Player joined room: " + roomID)
+  //open typingPage.HTML
+}
 function readyBttnClick() {
   console.log("someone clicked the ready button")
-  console.log("socket ID: " + socket.id)
   var namein = document.getElementById('name_in')
   var username = namein.value
   var readyUp = document.getElementById('readyButton')
@@ -20,20 +25,20 @@ function readyBttnClick() {
     var message = document.createElement("H5")
     message.innerHTML = "Type fast " + username
     document.getElementById("nameSpace").appendChild(message)
-    usernameAndRoom = [username, "room1"]
+    usernameAndRoom = [username, room]
     socket.emit("playerReady", usernameAndRoom)
     console.log("someone clicked the button")
   }
 }
+socket.on("lockRoom", function(roomID){
+  //update roomsPage.html and disable the button
+  console.log("received lockRoom request")
+  var button = document.getElementById(roomID)
+  button.setAttribute('disabled', true)
+});
 
-
-//the issue is where we send data back to the server. that's where the socket ids differ
 socket.on('playerTableUpdate', function(game){
-<<<<<<< HEAD
-  console.log(game)
-=======
   console.log("received playerTableUpdate")
->>>>>>> 02497bdecb04a4e406d4f51ac1db7a45711eeb0e
   var players = game["players"]
   for (var id in players) {
     if (players.hasOwnProperty(id)) {
@@ -67,6 +72,16 @@ socket.on('playerTableUpdate', function(game){
     }
   }
 })
+
+socket.on('onConnection', function(games) {
+  for (var room in games){
+    if(!games[room]['isOpen']){
+      var roomButton = document.getElementById(room)
+      roomButton.setAttribute('disabled', true)
+    }
+  }
+});
+
 
 
 
