@@ -6,10 +6,12 @@ function joinRoom(roomID){
   //open typingPage.HTML
   document.body.innerHTML = ""
   document.body.innerHTML = typingPage
+  document.cookie = "room="+roomID
 }
 
 function readyBttnClick() {
-  console.log("someone clicked the ready button")
+  var room = getCookie("room")
+  console.log("ROOM: " + room)
   var namein = document.getElementById('name_in')
   var username = namein.value
   var readyUp = document.getElementById('readyButton')
@@ -84,6 +86,22 @@ socket.on('onConnection', function(games) {
     }
   }
 });
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
 
 var typingPage = `<body>
   <div class = "container mt-1">

@@ -15,9 +15,9 @@ app.use('/static', express.static('./static/'));
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'roomsPage.html'));
 });
-app.get('/type', function(request, response) {
-  response.sendFile(path.join(__dirname, 'typingPage.html'));
-});
+// app.get('/type', function(request, response) {
+//   response.sendFile(path.join(__dirname, 'typingPage.html'));
+// });
 
 // Starts the server.
 server.listen(5000, function() {
@@ -29,6 +29,7 @@ io.on('connection', function(socket){
   socket.on('playerReady', function(usernameAndRoom){
     console.log("player ready received from game")
     readyUp(socket, usernameAndRoom)
+    var roomCode = usernameAndRoom[1]
     updatePlayerTable(roomCode)
     var playerInfo = [socket.id, games[roomCode]["players"][socket.id]]
     io.in(roomCode).emit('createProgressBar', playerInfo)
@@ -148,6 +149,43 @@ function updatePlayerTable(roomCode) {
   io.in(roomCode).emit('playerTableUpdate', games[roomCode])
 }
 
+function readyUp(socket, usernameAndRoom) {
+  //updates name
+  var username = usernameAndRoom[0]
+  var room = usernameAndRoom[1]
+  var players = games[room]["players"]
+  var player = players[socket.id]
+  player["name"] = username
+  console.log("PLAYER WHO READY UP NAME: " + player["name"])
+
+
+  //checks ready status
+  // if they haven't already clicked it
+  if(player.isReady == false)
+  {
+    // display player connected message
+    player.isReady = true
+    // var message = players[socket.id].name + " is ready.<br>"
+    // io.sockets.emit("otherPlayerReady", message)
+  }
+
+  // checks if everyone is ready
+  checkReady(room)
+}
+
+function checkReady(room) {
+  var players = games[room].players
+  var allReady = true
+  for (var id in players){
+    if (players.hasOwnProperty(id)){
+      var ready = players[id].isReady
+      if (!ready){
+        allReady = false
+      }
+    }
+  }
+}
+
 // //creates game state object
 // function addPersonToRoom(socket){
 //   //Cases
@@ -195,42 +233,7 @@ function updatePlayerTable(roomCode) {
 //     accuracy : 0
 //   };
 // }
-
-// function readyUp(socket, usernameAndRoom) {
-//   //updates name
-//   var username = usernameAndRoom[0]
-//   var room = usernameAndRoom[1]
-//   var players = games[room]["players"]
-//   var player = players[socket.id]
-//   player["name"] = username
-//   console.log("PLAYER WHO READY UP NAME: " + player["name"])
 //
-//
-//   //checks ready status
-//   // if they haven't already clicked it
-//   if(player.isReady == false)
-//   {
-//     // display player connected message
-//     player.isReady = true
-//     // var message = players[socket.id].name + " is ready.<br>"
-//     // io.sockets.emit("otherPlayerReady", message)
-//   }
-//
-//   // checks if everyone is ready
-//   checkReady(room)
-// }
-//
-// function checkReady(room) {
-//   var players = games[room].players
-//   var allReady = true
-//   for (var id in players){
-//     if (players.hasOwnProperty(id)){
-//       var ready = players[id].isReady
-//       if (!ready){
-//         allReady = false
-//       }
-//     }
-//   }
 //       // if everyone is ready->hasStarted to true and emit gameStart
 //   if(allReady){
 //     games[room]["hasStarted"] = true;
