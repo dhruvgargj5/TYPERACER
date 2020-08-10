@@ -46,6 +46,8 @@ io.on('connection', function(socket){
       games[roomID] = {
                 'isOpen' : true,
                 'hasStarted' : false,
+                'colors' : ["danger", "success", "primary", "warning"],
+                'colorCounter' : 0,
                 'players' : {}
               };
     }
@@ -55,11 +57,12 @@ io.on('connection', function(socket){
       name : "Anonymous Racer",
       player_progress: 0,
       finishingPlace : 0,
-      color : colors[0],
+      color : games[roomID].colors[games[roomID].colorCounter],
       isReady : false,
       wpm : 0,
       accuracy : 0
     };
+    games[roomID].colorCounter = (games[roomID].colorCounter + 1) % 4;
 
     var roomCapacity = Object.keys(players).length;
     console.log(JSON.stringify(games, undefined, 4))
