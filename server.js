@@ -72,6 +72,15 @@ io.on('connection', function(socket){
     }
     socket.join(roomID)
     io.in(roomID).emit('playerTableUpdate',games[roomID])
+    //update progress bar here by emitting 'createProgressBar'
+    for (var id in players){
+      if (players.hasOwnProperty(id)){
+        if(players[id].isReady){
+          var playerInfo = [id, games[roomID]["players"][id]]
+          socket.emit('createProgressBar', playerInfo)
+        }
+      }
+    }
   });
 
   socket.on("disconnect", function() {
