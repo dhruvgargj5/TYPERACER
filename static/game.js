@@ -340,38 +340,38 @@ var typingPage = `<body>
 // });
 //
 // //Starts the countdown (to the game) timer
-// socket.on("gameStart", function (){
-//   console.log("THE GAME HAS STARTED!")
-//   startCountdown()
-// });
+socket.on("gameStart", function (){
+  console.log("THE GAME HAS STARTED!")
+  startCountdown()
+});
 //
 // //The countdown (to the game) timer is started. This is the "Start in " timer.
 // //Prints "GAME STARTED" to client
 // //Makes the client's text box NON-readonly. Client can now enter text
-// function startCountdown(){
-// //credit W3 Schools
-//   var curr = 0
-//   var x = setInterval(function() {
-//
-//   // Get today's date and time
-//   // Find the distance between now and the count down date
-//   var distance = 10000 - curr;
-//   curr += 1000
-//   // Time calculations for days, hours, minutes and seconds
-//   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-//
-//   // Display the result in the element with id="demo"
-//   document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
-//   // If the count down is finished, write some text
-//   //start the GAME
-//   if (distance <= 0) {
-//     clearInterval(x);
-//     document.getElementById("startTimer").innerHTML = "GAME STARTED";
-//     startTimer()
-//     document.getElementById("in").removeAttribute('readonly')
-//   }
-// }, 1000);
-// }
+function startCountdown(){
+//credit W3 Schools
+  var curr = 0
+  var x = setInterval(function() {
+
+  // Get today's date and time
+  // Find the distance between now and the count down date
+    var distance = 10000 - curr;
+    curr += 1000
+    // Time calculations for days, hours, minutes and seconds
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Display the result in the element with id="demo"
+    document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
+    // If the count down is finished, write some text
+    //start the GAME
+    if (distance <= 0) {
+      clearInterval(x);
+      document.getElementById("startTimer").innerHTML = "GAME STARTED";
+      startTimer()
+      document.getElementById("in").removeAttribute('readonly')
+    }
+  }, 1000);
+}
 
 
 

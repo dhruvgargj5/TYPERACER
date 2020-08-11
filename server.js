@@ -182,7 +182,11 @@ function readyUp(socket, usernameAndRoom) {
   }
 
   // checks if everyone is ready
-  checkReady(room)
+  if (checkReady(room)) {
+    games[room]["hasStarted"] = true;
+    games[room]["isOpen"] = false;
+    io.in(room).emit('gameStart')
+  }
 }
 
 function checkReady(room) {
@@ -196,6 +200,7 @@ function checkReady(room) {
       }
     }
   }
+  return allReady
 }
 
 // //creates game state object
