@@ -86,6 +86,24 @@ io.on('connection', function(socket){
     }
   });
 
+  setInterval(function() {
+    for (var roomCode in games){
+      if (games.hasOwnProperty(roomCode)){
+        if(games[roomCode].hasStarted){
+          io.in(roomCode).emit('updateProgressBars', games.roomCode.players)
+        }
+      }
+    }
+   }, 1000 / 60);
+
+  socket.on('progressUpdate', function(progressAndRoomCode) {
+    //console.log(roomCode)
+    var playerProgress = progressAndRoomCode[0]
+    var roomCode = progressAndRoomCode[1]
+    var player = games[roomCode]["players"][socket.id];
+    player.player_progress = playerProgress.progress;
+  });
+
   socket.on("disconnect", function() {
     //leave room stuff
     //should be similar to what we had before
@@ -131,19 +149,7 @@ io.on('connection', function(socket){
 //   });
 //
 //
-//   setInterval(function() {
-//     roomCode = "room-" + roomNo
-//     if (games.hasOwnProperty(roomCode) &&
-//         games[roomCode].hasStarted) {
-//       io.sockets.emit('updateProgressBars', games[roomCode].players);
-//     }
-//    }, 1000 / 60);
-//
-//    socket.on('progressUpdate', function(data) {
-//      //console.log(roomCode)
-//      var player = games[roomCode]["players"][socket.id];
-//      player.player_progress = data.progress;
-//    });
+
 //    //console.log("Connect:")
 //   //console.log(games)
 // });
@@ -186,6 +192,7 @@ function readyUp(socket, usernameAndRoom) {
     games[room]["hasStarted"] = true;
     games[room]["isOpen"] = false;
     io.in(room).emit('gameStart')
+
   }
 }
 

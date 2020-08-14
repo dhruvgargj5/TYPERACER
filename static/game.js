@@ -7,8 +7,22 @@ function joinRoom(roomID){
   document.body.innerHTML = typingPage
   document.cookie = "room="+roomID
   loadDisplay()
+
+  setInterval(function() {
+    //gets the progress from display.js
+    var my_progress = {
+      progress: getProgress()
+    }
+    //emits the progess 60x/second
+    var roomCode = getCookie("room")
+    var progressAndRoomCode = [my_progress, roomCode]
+    socket.emit('progressUpdate', progressAndRoomCode);
+  }, 1000 / 60);
 }
 
+function getProgress(){
+  return 0
+}
 function readyBttnClick() {
   var room = getCookie("room")
   var namein = document.getElementById('name_in')
@@ -124,6 +138,16 @@ socket.on('onConnection', function(games) {
       roomButton.setAttribute('disabled', true)
     }
   }
+
+  socket.on('updateProgressBars', function (players) {
+    for (var id in players) {
+      if (players.hasOwnProperty(id)) {
+        var player_progress_bar = document.getElementById(id)
+        var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
+        player_progress_bar.setAttribute("style", progressBarStyle)
+      }
+    }
+  })
 });
 
 function getCookie(cname) {
@@ -295,24 +319,8 @@ var typingPage = `<body>
 //     //receive  "playerJoined"
 //   //open typingPage.HTML
 // }
-// socket.on('updateProgressBars', function (players) {
-//   for (var id in players) {
-//     if (players.hasOwnProperty(id)) {
-//       var player_progress_bar = document.getElementById(id)
-//       var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
-//       player_progress_bar.setAttribute("style", progressBarStyle)
-//     }
-//   }
-// })
 //
-// setInterval(function() {
-//   //gets the progress from display.js
-//   var my_progress = {
-//     progress: getProgress()
-//   }
-//   //emits the progess 60x/second
-//   socket.emit('progressUpdate', my_progress);
-// }, 1000 / 60);
+
 //
 //
 // // Get the input field
@@ -338,7 +346,7 @@ socket.on("gameStart", function (){
 });
 //
 // //The countdown (to the game) timer is started. This is the "Start in " timer.
-// //Prints "GAME STARTED" to client
+// //Prints
 // //Makes the client's text box NON-readonly. Client can now enter text
 function startCountdown(){
 //credit W3 Schools
@@ -367,7 +375,7 @@ function startCountdown(){
 
 function loadDisplay(){
   var script = document.createElement("script");
-  //script.setAttribute("type", "text/javascript");
+  script.setAttribute("type", "text/javascript");
   script.setAttribute("src", "static/display.js");
   document.getElementsByTagName("head")[0].appendChild(script);
 }
