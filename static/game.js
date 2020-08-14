@@ -2,16 +2,15 @@ var socket = io();
 
 function joinRoom(roomID){
   socket.emit("playerJoinedRoom", roomID)
-  console.log("Player joined room: " + roomID)
   //open typingPage.HTML
   document.body.innerHTML = ""
   document.body.innerHTML = typingPage
   document.cookie = "room="+roomID
+  loadDisplay()
 }
 
 function readyBttnClick() {
   var room = getCookie("room")
-  console.log("ROOM: " + room)
   var namein = document.getElementById('name_in')
   var username = namein.value
   var readyUp = document.getElementById('readyButton')
@@ -32,7 +31,6 @@ function readyBttnClick() {
     document.getElementById("nameSpace").appendChild(message)
     usernameAndRoom = [username, room]
     socket.emit("playerReady", usernameAndRoom)
-    console.log("someone clicked the button")
   }
 }
 socket.on("lockRoom", function(roomID){
@@ -202,12 +200,6 @@ var typingPage = `<body>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="static/display.js"></script>
-  <script src="static/game.js"></script>
-  <script src="static/mark.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>`
 
 
@@ -373,6 +365,12 @@ function startCountdown(){
   }, 1000);
 }
 
+function loadDisplay(){
+  var script = document.createElement("script");
+  //script.setAttribute("type", "text/javascript");
+  script.setAttribute("src", "static/display.js");
+  document.getElementsByTagName("head")[0].appendChild(script);
+}
 
 
 

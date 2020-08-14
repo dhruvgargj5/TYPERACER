@@ -12,8 +12,12 @@ var isOver = false;
 
 var progress = 0;
 
-document.addEventListener("DOMContentLoaded", init);
+console.log("display has been loaded in")
+
+//document.addEventListener("DOMContentLoaded", init);
+init()
 function init() {
+  console.log("init has been called")
     let txt = document.getElementById('in');
     txt.addEventListener('keypress', type);
     txt.addEventListener('keydown', backspace);
@@ -165,7 +169,6 @@ let timePassed = 0;
 let timeLeft = TIME_LIMIT;
 let timerInterval = null;
 let remainingPathColor = COLOR_CODES.info.color;
-
 
 document.getElementById("app").innerHTML = `
 <div class="base-timer">
