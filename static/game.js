@@ -38,7 +38,9 @@ socket.on("lockRoom", function(roomID){
   //update roomsPage.html and disable the button
   console.log("received lockRoom request")
   var button = document.getElementById(roomID)
-  button.setAttribute('disabled', true)
+  if (button != null) {
+    button.setAttribute('disabled', true)
+  }
 });
 
 socket.on('playerTableUpdate', function(game){

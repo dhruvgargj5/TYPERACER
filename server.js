@@ -195,7 +195,7 @@ function readyUp(socket, usernameAndRoom) {
     games[room]["hasStarted"] = true;
     games[room]["isOpen"] = false;
     io.in(room).emit('gameStart')
-
+    io.emit('lockRoom', room)
   }
 }
 
