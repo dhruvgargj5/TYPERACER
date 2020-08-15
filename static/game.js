@@ -7,22 +7,8 @@ function joinRoom(roomID){
   document.body.innerHTML = typingPage
   document.cookie = "room="+roomID
   loadDisplay()
-
-  setInterval(function() {
-    //gets the progress from display.js
-    var my_progress = {
-      progress: getProgress()
-    }
-    //emits the progess 60x/second
-    var roomCode = getCookie("room")
-    var progressAndRoomCode = [my_progress, roomCode]
-    socket.emit('progressUpdate', progressAndRoomCode);
-  }, 1000 / 60);
 }
 
-function getProgress(){
-  return 0
-}
 function readyBttnClick() {
   var room = getCookie("room")
   var namein = document.getElementById('name_in')
@@ -343,6 +329,16 @@ var typingPage = `<body>
 socket.on("gameStart", function (){
   console.log("THE GAME HAS STARTED!")
   startCountdown()
+  setInterval(function() {
+    //gets the progress from display.js
+    var my_progress = {
+      progress: getProgress()
+    }
+    //emits the progess 60x/second
+    var roomCode = getCookie("room")
+    var progressAndRoomCode = [my_progress, roomCode]
+    socket.emit('progressUpdate', progressAndRoomCode);
+  }, 1000 / 60);
 });
 //
 // //The countdown (to the game) timer is started. This is the "Start in " timer.

@@ -90,7 +90,7 @@ io.on('connection', function(socket){
     for (var roomCode in games){
       if (games.hasOwnProperty(roomCode)){
         if(games[roomCode].hasStarted){
-          io.in(roomCode).emit('updateProgressBars', games.roomCode.players)
+          io.in(roomCode).emit('updateProgressBars', games[roomCode].players)
         }
       }
     }
