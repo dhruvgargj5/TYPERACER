@@ -27,7 +27,7 @@ server.listen(5000, function() {
 io.on('connection', function(socket){
   io.emit('onConnection', games)
   socket.on('playerReady', function(usernameAndRoom){
-    console.log("player ready received from game")
+    //console.log("player ready received from game")
     readyUp(socket, usernameAndRoom)
     var roomCode = usernameAndRoom[1]
     updatePlayerTable(roomCode)
@@ -52,7 +52,7 @@ io.on('connection', function(socket){
               };
     }
     var players = games[roomID]['players']
-    console.log("socket.id: " + socket.id)
+    //console.log("socket.id: " + socket.id)
     players[socket.id] = {
       name : "Anonymous Racer",
       player_progress: 0,
@@ -101,6 +101,8 @@ io.on('connection', function(socket){
     var playerProgress = progressAndRoomCode[0]
     var roomCode = progressAndRoomCode[1]
     var player = games[roomCode]["players"][socket.id];
+    //console.log("socketID: " + socket.id)
+    //console.log(roomCode)
     player.player_progress = playerProgress.progress;
   });
 
@@ -171,10 +173,11 @@ function readyUp(socket, usernameAndRoom) {
   //updates name
   var username = usernameAndRoom[0]
   var room = usernameAndRoom[1]
+  console.log("ID: " + socket.id + ", Room: " + room)
   var players = games[room]["players"]
   var player = players[socket.id]
   player["name"] = username
-  console.log("PLAYER WHO READY UP NAME: " + player["name"])
+  //console.log("PLAYER WHO READY UP NAME: " + player["name"])
 
 
   //checks ready status

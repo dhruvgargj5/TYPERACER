@@ -1,16 +1,17 @@
 var socket = io();
-
+var room = ""
 function joinRoom(roomID){
   socket.emit("playerJoinedRoom", roomID)
   //open typingPage.HTML
   document.body.innerHTML = ""
   document.body.innerHTML = typingPage
   document.cookie = "room="+roomID
+  room = roomID
   loadDisplay()
 }
 
 function readyBttnClick() {
-  var room = getCookie("room")
+  //var room = getCookie("room")
   var namein = document.getElementById('name_in')
   var username = namein.value
   var readyUp = document.getElementById('readyButton')
@@ -329,14 +330,15 @@ var typingPage = `<body>
 socket.on("gameStart", function (){
   console.log("THE GAME HAS STARTED!")
   startCountdown()
+  //var roomCode = getCookie("room")
   setInterval(function() {
     //gets the progress from display.js
     var my_progress = {
       progress: getProgress()
     }
     //emits the progess 60x/second
-    var roomCode = getCookie("room")
-    var progressAndRoomCode = [my_progress, roomCode]
+    console.log("ID: " + socket.id + ", Room: " + room)
+    var progressAndRoomCode = [my_progress, room]
     socket.emit('progressUpdate', progressAndRoomCode);
   }, 1000 / 60);
 });
