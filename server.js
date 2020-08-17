@@ -46,6 +46,7 @@ io.on('connection', function(socket){
       games[roomID] = {
                 'isOpen' : true,
                 'hasStarted' : false,
+                'isGameDone' : false,
                 'colors' : ["danger", "success", "primary", "warning"],
                 'colorCounter' : 0,
                 'players' : {}
@@ -60,7 +61,9 @@ io.on('connection', function(socket){
       color : games[roomID].colors[games[roomID].colorCounter],
       isReady : false,
       wpm : 0,
-      accuracy : 0
+      accuracy : 0,
+      timeFinish : -1,
+      isDone : false
     };
     games[roomID].colorCounter = (games[roomID].colorCounter + 1) % 4;
 
@@ -105,7 +108,6 @@ io.on('connection', function(socket){
     //console.log(roomCode)
     player.player_progress = playerProgress.progress;
   });
-
   socket.on("playerWantsToPlayAlone", function(room){
     games[room]["hasStarted"] = true;
     games[room]["isOpen"] = false;
@@ -113,13 +115,41 @@ io.on('connection', function(socket){
     io.emit('lockRoom', room)
   })
 
+  socket.on("playerFinished", function(roomAndTimePassed){
+    var room = roomAndTimePassed[0]
+    var time = roomAndTimePassed[1]
+    var players = games[room]['players']
+    var player = players[socket.id]
+    player.isDone = true;
+    player.timeFinish = time;
+    var allDone = true
+    for (var id in players){
+      if (players.hasOwnProperty(id)){
+        if(!players[id].isDone){
+          allDone = false
+        }
+      }
+    }
+    if(allDone){
+      gameFinish(room)
+    }
+  })
+
+  socket.on("gameIsOver", function(room){
+    if(!games[room].isGameDone){
+      gameFinish(room)
+    }
+  })
   socket.on("disconnect", function() {
     //leave room stuff
     //should be similar to what we had before
   });
 });
 
-
+function gameFinish(room){
+  games[room].isGameDone = true
+  io.in(room).emit("showEndGameBoard", games[room])
+}
 
 
 // io.on("connection", function(socket){

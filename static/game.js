@@ -1,5 +1,14 @@
 var socket = io();
 var room = ""
+
+function gameOver(){
+  socket.emit("gameIsOver", room)
+}
+
+function playerFinish(){
+  var roomAndTimePassed = [room, timePassed]
+  socket.emit("playerFinished", roomAndTimePassed)
+}
 function joinRoom(roomID){
   socket.emit("playerJoinedRoom", roomID)
   //open typingPage.HTML
@@ -34,6 +43,50 @@ function readyBttnClick() {
     socket.emit("playerReady", usernameAndRoom)
   }
 }
+
+socket.on("showEndGameBoard", function(players){
+  console.log("showEndGameBoard")
+  var leaderBoard = `<div class="modal fade" id="gameEndLeaderboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Place</th>
+                <th scope="col">Name</th>
+                <th scope="col">Finishing Time</th>
+                <th scope="col">WPM</th>
+              </tr>
+            </thead>
+            <tbody id = "endGameInfo">
+              <tr>
+                <td>1st</td>
+                <td>Dan</td>
+                <td>34 seconds</td>
+                <td>67</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-primary">Return to home page</button>
+        </div>
+      </div>
+    </div>
+  </div>`
+
+  // $('#gameEndLeaderboard').modal({ show: false})
+
+  $('#gameEndLeaderboard').modal('show');
+})
 socket.on("lockRoom", function(roomID){
   //update roomsPage.html and disable the button
   console.log("received lockRoom request")
@@ -184,7 +237,7 @@ var typingPage = `<body>
     <div class = "flex-md-column col-md-9">
       <div id="progress_bars" class="row" >
       </div>
-      <p id = "correct_text" class = "alert alert-info">Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.</p>
+      <p id = "correct_text" class = "alert alert-info">I love u of m</p>
         <div class="row">
           <label for="in" class="col-md-2 col-form-label" >Type Here: </label>
             <div class="input-group-prepend col-md-9">
@@ -347,7 +400,6 @@ socket.on("gameStart", function (){
       progress: getProgress()
     }
     //emits the progess 60x/second
-    console.log("ID: " + socket.id + ", Room: " + room)
     var progressAndRoomCode = [my_progress, room]
     socket.emit('progressUpdate', progressAndRoomCode);
   }, 1000 / 60);

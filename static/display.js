@@ -5,8 +5,8 @@ var correctCounter = 0;
 var incorrectCounter = 0;
 var input_text = "";
 //var startedTimer = false;
-var correct_text = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense."
-
+//var correct_text = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense."
+var correct_text = "I love u of m"
 var isWin = false;
 var isOver = false;
 
@@ -34,7 +34,6 @@ function backspace(event)
   if (evtKcode == 8)
   {
     //GET RID OF RED HIGHLIGHTED CHARS
-    log("FOUND A BACKSPACE");
     incorrectCounter--;
     incorrectHighlight();
     userCounter--;
@@ -42,7 +41,6 @@ function backspace(event)
 
   if (evtKcode == 13)
   {
-    log ("ENTER");
     if (correctCounter == correct_text.length)
     {
       log("WIN");
@@ -78,20 +76,13 @@ function getProgress() {
   return progress;
 }
 
-function compare(counter)
-{
+function compare(counter){
 
-//  log ("CORRECT TEXT LENGTH: " + correct_text.length)
-  // log ("CORRECT TEXT: " + correct_text[correctCounter]);
-  // log ("INPUT TEXT: " + input_text[counter]);
-  //log ("CORRECT TEXT COUNTER: " + correctCounter);
-  // log ("INCORRECT COUNTER: " + incorrectCounter);
 
   //incorrectCounter <= 0 means you can abuse the backspace
   if (!isOver && !isWin) {
     if (correct_text[correctCounter] == input_text[counter] && incorrectCounter <= 0)
     {
-      log("T");
       //clears input space after every word
       if (input_text[counter] == " ")
       {
@@ -102,7 +93,6 @@ function compare(counter)
       incorrectCounter = 0;
     }
     else {
-        log("F");
         incorrectCounter++;
         incorrectHighlight();
     }
@@ -213,6 +203,13 @@ function startTimer() {
     if (isOver || isWin) {
       document.getElementById("in").readOnly = true;
       onTimesUp();
+      if(isWin){
+        playerFinish()
+      }
+      if(isOver){
+        gameOver()
+      }
+      //end of game stuff
     }
   }, 1000);
 }
