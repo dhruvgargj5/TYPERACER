@@ -106,6 +106,13 @@ io.on('connection', function(socket){
     player.player_progress = playerProgress.progress;
   });
 
+  socket.on("playerWantsToPlayAlone", function(room){
+    games[room]["hasStarted"] = true;
+    games[room]["isOpen"] = false;
+    io.in(room).emit('gameStart')
+    io.emit('lockRoom', room)
+  })
+
   socket.on("disconnect", function() {
     //leave room stuff
     //should be similar to what we had before
@@ -191,7 +198,12 @@ function readyUp(socket, usernameAndRoom) {
   }
 
   // checks if everyone is ready
-  if (checkReady(room)) {
+  var players = games[room].players
+  if(Object.keys(players).length == 1){
+    console.log("ALONE PLAYER")
+    io.emit("alonePlayer")
+  }
+  else if (checkReady(room)) {
     games[room]["hasStarted"] = true;
     games[room]["isOpen"] = false;
     io.in(room).emit('gameStart')
@@ -212,6 +224,7 @@ function checkReady(room) {
   }
   return allReady
 }
+
 
 // //creates game state object
 // function addPersonToRoom(socket){

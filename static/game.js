@@ -139,6 +139,14 @@ socket.on('onConnection', function(games) {
   })
 });
 
+socket.on("alonePlayer", function(){
+  var userInput = confirm("Do you really want to play a typing game by your self?");
+  if(userInput == true){
+    //player wants to play alone
+    socket.emit("playerWantsToPlayAlone", room)
+  }
+});
+
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
