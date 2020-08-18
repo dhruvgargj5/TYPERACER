@@ -11,6 +11,7 @@ var isWin = false;
 var isOver = false;
 
 var progress = 0;
+var wpm = 0;
 
 console.log("display has been loaded in")
 
@@ -124,7 +125,7 @@ function incorrectHighlight()
 function update_wpm() {
   let words = correctCounter / 5;
   let time = timePassed / 60;
-  let wpm = Math.floor(words / time);
+  wpm = Math.floor(words / time);
   if (correctCounter >= 10 && correctCounter % 3 == 0) {
       document.getElementById("wpm").innerHTML = "wpm: " + String(wpm);
   }

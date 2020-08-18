@@ -118,10 +118,12 @@ io.on('connection', function(socket){
   socket.on("playerFinished", function(roomAndTimePassed){
     var room = roomAndTimePassed[0]
     var time = roomAndTimePassed[1]
+    var wpm =  roomAndTimePassed[2]
     var players = games[room]['players']
     var player = players[socket.id]
     player.isDone = true;
     player.timeFinish = time;
+    player.WPM = wpm;
     var allDone = true
     for (var id in players){
       if (players.hasOwnProperty(id)){
@@ -148,7 +150,7 @@ io.on('connection', function(socket){
 
 function gameFinish(room){
   games[room].isGameDone = true
-  io.in(room).emit("showEndGameBoard", games[room])
+  io.in(room).emit("showEndGameBoard", games[room]["players"])
 }
 
 

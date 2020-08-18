@@ -6,7 +6,7 @@ function gameOver(){
 }
 
 function playerFinish(){
-  var roomAndTimePassed = [room, timePassed]
+  var roomAndTimePassed = [room, timePassed, wpm]
   socket.emit("playerFinished", roomAndTimePassed)
 }
 function joinRoom(roomID){
@@ -45,46 +45,55 @@ function readyBttnClick() {
 }
 
 socket.on("showEndGameBoard", function(players){
+  // <tr>
+  //   <td>1st</td>
+  //   <td>Dan</td>
+  //   <td>34 seconds</td>
+  //   <td>67</td>
+  // </tr>
+  playerArr = []
+  for (var id in players) {
+    if(players.hasOwnProperty(id)) {
+      playerArr.push(players[id])
+      console.log(JSON.stringify(players[id]))
+    }
+  }
+  playerArr.sort(function(p1, p2) {
+    if (p1.timePassed > p2.timePassed) {
+      return 1;
+    }
+    if (p1.timePassed < p2.timePassed) {
+      return -1;
+    }
+    return 0
+  })
+  console.log(JSON.stringify(playerArr))
+  var table = document.getElementById("endGameInfo")
+  var p = 1
+  for (let i = 0; i < playerArr.length; i++) {
+    player = playerArr[i]
+    console.log(JSON.stringify(player))
+    var tr = document.createElement("TR")
+    var place = document.createElement("TD")
+    place.innerHTML = p
+    var name = document.createElement("TD")
+    if (p == 1) {
+      name.innerHTML = "👑 " + player.name
+    } else {
+      name.innerHTML = player.name
+    }
+    var time = document.createElement("TD")
+    time.innerHTML = String(player.timeFinish) + " seconds"
+    var wpm = document.createElement("TD")
+    wpm.innerHTML = String(player.WPM)
+    tr.appendChild(place)
+    tr.appendChild(name)
+    tr.appendChild(time)
+    tr.appendChild(wpm)
+    table.appendChild(tr)
+    p++
+  }
   console.log("showEndGameBoard")
-  var leaderBoard = `<div class="modal fade" id="gameEndLeaderboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Place</th>
-                <th scope="col">Name</th>
-                <th scope="col">Finishing Time</th>
-                <th scope="col">WPM</th>
-              </tr>
-            </thead>
-            <tbody id = "endGameInfo">
-              <tr>
-                <td>1st</td>
-                <td>Dan</td>
-                <td>34 seconds</td>
-                <td>67</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-
-          <button type="button" class="btn btn-primary">Return to home page</button>
-        </div>
-      </div>
-    </div>
-  </div>`
-
-  // $('#gameEndLeaderboard').modal({ show: false})
-
   $('#gameEndLeaderboard').modal('show');
 })
 socket.on("lockRoom", function(roomID){
@@ -271,6 +280,39 @@ var typingPage = `<body>
   </div>
 </div>
 </div>
+<div class="modal fade" id="gameEndLeaderboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Place</th>
+              <th scope="col">Name</th>
+              <th scope="col">Finishing Time</th>
+              <th scope="col">WPM</th>
+            </tr>
+          </thead>
+          <tbody id = "endGameInfo">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary">Return to home page</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('#gameEndLeaderboard').modal({ show: false})
+</script>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -415,7 +457,7 @@ function startCountdown(){
 
   // Get today's date and time
   // Find the distance between now and the count down date
-    var distance = 10000 - curr;
+    var distance = 3000 - curr;
     curr += 1000
     // Time calculations for days, hours, minutes and seconds
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
