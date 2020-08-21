@@ -75,6 +75,7 @@ io.on('connection', function(socket){
       //to 'roomID'
       games[roomID]['isOpen'] = false;
       io.emit('lockRoom', roomID)
+      console.log("lock Room 78")
     }
     socket.join(roomID)
     io.in(roomID).emit('playerTableUpdate',games[roomID])
@@ -158,6 +159,9 @@ io.on('connection', function(socket){
     var players = games[room].players
     var gameHasStarted = games[room].hasStarted
     if(!gameHasStarted){
+      var players = games[room].players
+      io.emit('unlockRoom', room)
+      games[room].isOpen = true;
       if(Object.keys(players).length == 1){
         console.log("ALONE PLAYER")
         io.emit("alonePlayer")
@@ -166,9 +170,21 @@ io.on('connection', function(socket){
         games[room]["hasStarted"] = true;
         games[room]["isOpen"] = false;
         socket.to(room).emit('gameStart')
+        console.log("lockRoom 172")
         io.emit('lockRoom', room)
       }
     }
+    //game has started
+    else{
+      var players = games[room].players
+      if(Object.keys(players).length == 0){
+        io.emit('unlockRoom', room)
+        games[room].isOpen = true;
+        games[room].hasStarted = false;
+      }
+    }
+
+
   });
   socket.on("disconnect", function() {
     //leave room stuff
@@ -273,6 +289,7 @@ function readyUp(socket, usernameAndRoom) {
     games[room]["isOpen"] = false;
     io.in(room).emit('gameStart')
     io.emit('lockRoom', room)
+    console.log("lockRoom 291")
   }
 }
 

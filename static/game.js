@@ -105,6 +105,15 @@ socket.on("lockRoom", function(roomID){
   if (button != null) {
     button.setAttribute('disabled', true)
   }
+})
+
+  socket.on("unlockRoom", function(roomID){
+    //update roomsPage.html and disable the button
+    console.log("received unlockRoom request")
+    var button = document.getElementById(roomID)
+    if (button != null) {
+      button.setAttribute('disabled', false)
+    }
 });
 
 socket.on('playerTableUpdate', function(game){
@@ -188,7 +197,9 @@ socket.on('onConnection', function(games) {
   for (var room in games){
     if(!games[room]['isOpen']){
       var roomButton = document.getElementById(room)
-      roomButton.setAttribute('disabled', true)
+      if(roomButton != null){
+        roomButton.setAttribute('disabled', true)
+      }
     }
   }
 
