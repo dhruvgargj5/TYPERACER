@@ -58,12 +58,13 @@ socket.on("showEndGameBoard", function(players){
       console.log(JSON.stringify(players[id]))
     }
   }
+  console.log("time passed: " + playerArr[0].timeFinish)
   playerArr.sort(function(p1, p2) {
-    if (p1.timePassed > p2.timePassed) {
-      return 1;
-    }
-    if (p1.timePassed < p2.timePassed) {
+    if (p1.timeFinish < p2.timeFinish) {
       return -1;
+    }
+    if (p1.timeFinish > p2.timeFinish) {
+      return 1;
     }
     return 0
   })
@@ -85,6 +86,7 @@ socket.on("showEndGameBoard", function(players){
     var time = document.createElement("TD")
     time.innerHTML = String(player.timeFinish) + " seconds"
     var wpm = document.createElement("TD")
+    console.log("WPM: " + String(player.WPM))
     wpm.innerHTML = String(player.WPM)
     tr.appendChild(place)
     tr.appendChild(name)
