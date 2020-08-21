@@ -142,9 +142,46 @@ io.on('connection', function(socket){
       gameFinish(room)
     }
   })
+  socket.on('disconnecting', function(){
+    var self = this;
+    var room = Object.keys(self.rooms)[1];
+    var idAndRoomCode = [socket.id, room]
+    socket.to(room).emit("deletePlayerInTable",idAndRoomCode)
+    var isReady = games[room]['players'][socket.id].isReady
+    if(isReady){
+      //prog bar for this player should exist
+      //call deleteProgressBar
+      socket.to(room).emit('deleteProgressBar', socket.id)
+    }
+    delete games[room]['players'][socket.id]
+
+    var players = games[room].players
+    var gameHasStarted = games[room].hasStarted
+    if(!gameHasStarted){
+      if(Object.keys(players).length == 1){
+        console.log("ALONE PLAYER")
+        io.emit("alonePlayer")
+      }
+      else if (checkReady(room)) {
+        games[room]["hasStarted"] = true;
+        games[room]["isOpen"] = false;
+        socket.to(room).emit('gameStart')
+        io.emit('lockRoom', room)
+      }
+    }
+  });
   socket.on("disconnect", function() {
     //leave room stuff
     //should be similar to what we had before
+     console.log(socket.id + " has disconnected")
+    // var rooms = socket.rooms
+    // console.log(rooms)
+    // console.log(typeof(room))
+    //take player out of JSON
+    //delete progress bars if they are ready
+    //delete from playertable
+    //if game hasn't started, open up the room
+    //if this is the last person in the room, open up the room
   });
 });
 
@@ -195,10 +232,6 @@ function gameFinish(room){
 //   //console.log(games)
 // });
 
-// function deletePlayerInTable(id, roomCode){
-//   var idAndRoomCode = [id,roomCode]
-//   io.in(roomCode).emit("deletePlayerInTable",idAndRoomCode)
-// }
 
 
 //playerTableUpdate function

@@ -327,13 +327,13 @@ var typingPage = `<body>
 //   console.log("RoomCode: " + roomCode)
 // });
 //
-// socket.on("deletePlayerInTable", function(idAndRoomCode){
-//   var id = idAndRoomCode[0]
-//   var roomCode = idAndRoomCode[1]
-//   var trID = id + "-tr"
-//   var trIDElement = document.getElementById(trID)
-//   trIDElement.remove()
-// })
+socket.on("deletePlayerInTable", function(idAndRoomCode){
+  var id = idAndRoomCode[0]
+  var roomCode = idAndRoomCode[1]
+  var trID = id + "-tr"
+  var trIDElement = document.getElementById(trID)
+  trIDElement.remove()
+})
 //
 // socket.on('playerTableUpdate', function(game){
 //   //console.log(game)
@@ -373,12 +373,12 @@ var typingPage = `<body>
 //
 
 //
-// socket.on('deleteProgressBar', function(id) {
-//   var outMostDiv = document.getElementById(id + "-omd")
-//   var label = document.getElementById(id + "-tag")
-//   label.remove()
-//   outMostDiv.remove()
-// })
+socket.on('deleteProgressBar', function(id) {
+  var outMostDiv = document.getElementById(id + "-omd")
+  var label = document.getElementById(id + "-tag")
+  label.remove()
+  outMostDiv.remove()
+})
 //
 // function readyBttnClick() {
 //   console.log("someone clicked the ready button")
