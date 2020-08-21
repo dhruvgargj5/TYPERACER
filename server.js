@@ -143,11 +143,13 @@ io.on('connection', function(socket){
       gameFinish(room)
     }
   })
+  //unlock room is being emitted, but not actually unlocking the room on an OPEN page
   socket.on('disconnecting', function(){
     var self = this;
     var room = Object.keys(self.rooms)[1];
     var idAndRoomCode = [socket.id, room]
     socket.to(room).emit("deletePlayerInTable",idAndRoomCode)
+    //players might not be in the room, do a check here
     var isReady = games[room]['players'][socket.id].isReady
     if(isReady){
       //prog bar for this player should exist
