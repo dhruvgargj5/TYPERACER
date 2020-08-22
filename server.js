@@ -162,7 +162,7 @@ io.on('connection', function(socket){
         console.log("ALONE PLAYER")
         io.emit("alonePlayer")
       }
-      else if (checkReady(room)) {
+      else if (checkReady(room) && Object.keys(players).length > 1) {
         games[room]["hasStarted"] = true;
         games[room]["isOpen"] = false;
         socket.to(room).emit('gameStart')
