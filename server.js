@@ -15,9 +15,6 @@ app.use('/static', express.static('./static/'));
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'roomsPage.html'));
 });
-// app.get('/type', function(request, response) {
-//   response.sendFile(path.join(__dirname, 'typingPage.html'));
-// });
 
 // Starts the server.
 server.listen(5000, function() {
@@ -143,7 +140,6 @@ io.on('connection', function(socket){
       gameFinish(room)
     }
   })
-  //unlock room is being emitted, but not actually unlocking the room on an OPEN page
   socket.on('disconnecting', function(){
     var self = this;
     var room = Object.keys(self.rooms)[1];
@@ -152,8 +148,6 @@ io.on('connection', function(socket){
     //players might not be in the room, do a check here
     var isReady = games[room]['players'][socket.id].isReady
     if(isReady){
-      //prog bar for this player should exist
-      //call deleteProgressBar
       socket.to(room).emit('deleteProgressBar', socket.id)
     }
     delete games[room]['players'][socket.id]
@@ -208,53 +202,6 @@ function gameFinish(room){
   io.in(room).emit("showEndGameBoard", games[room]["players"])
 }
 
-
-// io.on("connection", function(socket){
-//   //console.log("NEW CONNECTION: ", socket.id)
-//   var roomCode = addPersonToRoom(socket)
-//   //call playerTable update
-//   updatePlayerTable(roomCode)
-//   colorCounter = (colorCounter + 1) % 4
-//
-//
-//
-//   socket.on('disconnect', function() {
-//     //console.log("Disconnected: " + socket.id)
-//     socket.leave(roomCode)
-//     //console.log(io.nsps['/'].adapter.rooms)
-//     var leavingPlayerReady = games[roomCode]["players"][socket.id].isReady
-//     delete games[roomCode]["players"][socket.id]
-//     if (isEmpty(games[roomCode]["players"])) {
-//       delete games[roomCode]
-//       // console.log("Disconnect,  pre increment")
-//       // console.log("RoomNo: " + roomNo)
-//       // console.log("RoomCode: " + roomCode)
-//       // console.log("Disconnect,  post increment")
-//       // console.log("RoomNo: " + roomNo)
-//       // console.log("RoomCode: " + roomCode)
-//     }
-//     else {
-//       checkReady(roomCode)
-//       deletePlayerInTable(socket.id,roomCode)
-//       if(leavingPlayerReady){
-//         io.in(roomCode).emit('deleteProgressBar', socket.id)
-//       }
-//     }
-//     //console.log("Disconnect: ")
-//     //console.log(games)
-//   });
-//
-//
-
-//    //console.log("Connect:")
-//   //console.log(games)
-// });
-
-
-
-//playerTableUpdate function
-//  emit to a specifc room the whole gameState?
-// client side: they take the gameState and edit HTML
 function updatePlayerTable(roomCode) {
   io.in(roomCode).emit('playerTableUpdate', games[roomCode])
 }
@@ -308,120 +255,3 @@ function checkReady(room) {
   }
   return allReady
 }
-
-
-// //creates game state object
-// function addPersonToRoom(socket){
-//   //Cases
-//   //Attempt to join a room that has < 4
-//   //Attempt to join a room that has 4 or more
-//   var roomCode = "room-" + roomNo
-//   if(io.nsps['/'].adapter.rooms[roomCode] &&
-//     (io.nsps['/'].adapter.rooms[roomCode].length >= 4 ||
-//     games[roomCode].hasStarted)){
-//       //"creates" a new room
-//       //console.log("roomNo is incremented at addingPersonToRoom")
-//       roomNo++
-//       roomCode = "room-" + roomNo
-//       // console.log("RoomNo: " + roomNo)
-//       // console.log("RoomCode: " + roomCode)
-//   }
-//
-//   socket.join(roomCode)
-//   socket.emit('JoinedARoom', roomCode)
-//   //console.log(io.nsps['/'].adapter.rooms)
-//
-//   //if room doesn't exist in JSON
-//   if(!games.hasOwnProperty(roomCode)){
-//     games[roomCode] = {
-//       hasStarted: false,
-//       players: {}
-//     }
-//   }
-//   addPersonToJSON(socket, roomCode)
-//   return roomCode
-// }
-
-//playerTable update
-//players are populated
-// function addPersonToJSON(socket, roomCode){
-//   var game = games[roomCode]
-//   var players = game.players
-//   players[socket.id] = {
-//     name : "Anonymous Racer",
-//     player_progress: 0,
-//     finishingPlace : 0,
-//     color : colors[colorCounter],
-//     isReady : false,
-//     wpm : 0,
-//     accuracy : 0
-//   };
-// }
-//
-//       // if everyone is ready->hasStarted to true and emit gameStart
-//   if(allReady){
-//     games[room]["hasStarted"] = true;
-//     io.in(room).emit('gameStart')
-//   }
-// }
-
-// function isEmpty(obj) {
-//     for(var key in obj) {
-//         if(obj.hasOwnProperty(key))
-//             return false;
-//     }
-//     return true;
-// }
-
-
-
-
-//
-// // makes a gameState JSON that holds players and game info
-// var gameState = {};
-// gameState["players"] = {};
-// gameState["hasStarted"] = false;
-// var players =  gameState.players
-// var colors = ["bg-success", "bg-info", "bg-warning", "bg-danger","bg-primary"]
-// var colorCounter = 0
-//
-// // Add the WebSocket handlers
-// io.on('connection', function(socket) {
-//   var players = gameState.players
-//   socket.on('NameSubmitted', function(username){
-//     players[socket.id]["name"] = username
-//   })
-//   // when a player clicks their ready button
-//   socket.on('playerReady', function()
-//   {
-//
-//   });
-//   // creates a new player when they join
-//   var color_in = colors[colorCounter]
-//   players[socket.id] = {
-//     player_progress: 0,
-//     isReady : false,
-//     win : false,
-//     isPlaying: true,
-//     color : color_in
-//   };
-//   colorCounter = (colorCounter + 1) % 5
-//   // doesn't let player participate if the game has started
-//   // hasStarted -> countdown has begin (all present players are ready)
-//   if (gameState.hasStarted) {
-//     players[socket.id].isPlaying = false;
-//   }
-//
-//   // emits all players data to update clients progress bars when a new player connects
-//
-//   // updates all players progress in players JSON (60 times/sec)
-//   socket.on('progressUpdate', function(data) {
-//     var player = players[socket.id] || {};
-//     player.player_progress = data.progress;
-//   });
-//
-// });
-//
-// // sends game state to clients to update progress bars (60 times/sec)
-
-//

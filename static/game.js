@@ -112,7 +112,7 @@ socket.on("lockRoom", function(roomID){
     console.log("received unlockRoom request")
     var button = document.getElementById(roomID)
     if (button != null) {
-      button.setAttribute('disabled', false)
+      button.removeAttribute('disabled')
     }
 });
 
@@ -390,60 +390,7 @@ socket.on('deleteProgressBar', function(id) {
   label.remove()
   outMostDiv.remove()
 })
-//
-// function readyBttnClick() {
-//   console.log("someone clicked the ready button")
-//   var namein = document.getElementById('name_in')
-//   var username = namein.value
-//   var readyUp = document.getElementById('readyButton')
-//   var errormessage = document.getElementById('name_feedback')
-//   if (username == "") {
-//     errormessage.setAttribute("class", "invalid-feedback")
-//     errormessage.innerHTML = "Please enter a name to continue"
-//     namein.setAttribute("class", "form-control is-invalid mr-sm-2")
-//   }
-//   if (username != "") {
-//     errormessage.setAttribute("class", "valid-feedback")
-//     namein.setAttribute("class", "form-control is-valid mr-sm-2")
-//     errormessage.innerHTML = "Looks good!"
-//     readyUp.remove()
-//     namein.remove()
-//     var message = document.createElement("H5")
-//     message.innerHTML = "Type fast " + username
-//     document.getElementById("nameSpace").appendChild(message)
-//     usernameAndRoom = [username, room]
-//     socket.emit("playerReady", usernameAndRoom)
-//     console.log("someone clicked the button")
-//   }
-// }
-//
-// function joinRoom(roomID){
-//   socket.emit("playerJoinedRoom", roomID)
-//   console.log("Player joined room: " + roomID)
-//     //emit to server that a player has joined room
-//     //receive  "playerJoined"
-//   //open typingPage.HTML
-// }
-//
 
-//
-//
-// // Get the input field
-// var input = document.getElementById("name_in");
-//
-// // Execute a function when the user releases a key on the keyboard
-// input.addEventListener("keydown", function(event) {
-//   // Number 13 is the "Enter" key on the keyboard
-//
-//   if (event.keyCode === 13) {
-//     // Cancel the default action, if needed
-//     event.preventDefault();
-//     // Trigger the button element with a click
-//     console.log("someone hit enter!")
-//     readyBttnClick()
-//   }
-// });
-//
 // //Starts the countdown (to the game) timer
 socket.on("gameStart", function (){
   console.log("THE GAME HAS STARTED!")
