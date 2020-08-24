@@ -141,46 +141,51 @@ io.on('connection', function(socket){
     }
   })
   socket.on('disconnecting', function(){
+//     window.onbeforeunload = function(e) {
+//   return 'Dialog text here.';
+// };
+    //console.log(JSON.stringify(games, undefined, 4))
     var self = this;
     var room = Object.keys(self.rooms)[1];
     var idAndRoomCode = [socket.id, room]
-    socket.to(room).emit("deletePlayerInTable",idAndRoomCode)
-    //players might not be in the room, do a check here
-    var isReady = games[room]['players'][socket.id].isReady
-    if(isReady){
-      socket.to(room).emit('deleteProgressBar', socket.id)
-    }
-    delete games[room]['players'][socket.id]
+    if(games.hasOwnProperty(room)){
+      socket.to(room).emit("deletePlayerInTable",idAndRoomCode)
+      //players might not be in the room, do a check here
+      var isReady = false;
+      isReady =  games[room]['players'][socket.id].isReady
+      if(isReady){
+        socket.to(room).emit('deleteProgressBar', socket.id)
+      }
+      delete games[room]['players'][socket.id]
 
-    var players = games[room].players
-    var gameHasStarted = games[room].hasStarted
-    if(!gameHasStarted){
       var players = games[room].players
-      io.emit('unlockRoom', room)
-      games[room].isOpen = true;
-      if(Object.keys(players).length == 1){
-        console.log("ALONE PLAYER")
-        io.emit("alonePlayer")
-      }
-      else if (checkReady(room) && Object.keys(players).length > 1) {
-        games[room]["hasStarted"] = true;
-        games[room]["isOpen"] = false;
-        socket.to(room).emit('gameStart')
-        console.log("lockRoom 172")
-        io.emit('lockRoom', room)
-      }
-    }
-    //game has started
-    else{
-      var players = games[room].players
-      if(Object.keys(players).length == 0){
+      var gameHasStarted = games[room].hasStarted
+      if(!gameHasStarted){
+        var players = games[room].players
         io.emit('unlockRoom', room)
         games[room].isOpen = true;
-        games[room].hasStarted = false;
+        if(Object.keys(players).length == 1){
+          console.log("Refresh ALONE PLAYER")
+          socket.to(room).emit("alonePlayer")
+        }
+        else if (checkReady(room) && Object.keys(players).length > 1) {
+          games[room]["hasStarted"] = true;
+          games[room]["isOpen"] = false;
+          socket.to(room).emit('gameStart')
+          console.log("lockRoom 172")
+          io.emit('lockRoom', room)
+        }
+      }
+      //game has started
+      else{
+        var players = games[room].players
+        if(Object.keys(players).length == 0){
+          io.emit('unlockRoom', room)
+          games[room].isOpen = true;
+          games[room].hasStarted = false;
+        }
       }
     }
-
-
   });
   socket.on("disconnect", function() {
     //leave room stuff
@@ -230,7 +235,6 @@ function readyUp(socket, usernameAndRoom) {
   // checks if everyone is ready
   var players = games[room].players
   if(Object.keys(players).length == 1){
-    console.log("ALONE PLAYER")
     io.emit("alonePlayer")
   }
   else if (checkReady(room)) {
