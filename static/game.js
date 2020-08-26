@@ -217,16 +217,18 @@ socket.on('onConnection', function(games) {
 
 socket.on("alonePlayer", function(){
    console.log('received alone player')
-  var userInput = confirm("Do you really want to play a typing game by your self?");
-  if(userInput == true){
-    //player wants to play alone
-    socket.emit("playerWantsToPlayAlone", room)
+  // var userInput = confirm("Do you really want to play a typing game by your self?");
+  // if(userInput == true){
+  //   //player wants to play alone
+  //   socket.emit("playerWantsToPlayAlone", room)
+  // }
+  swal("Do you really want to play a typing game by your self?")
+.then((value) => {
+  if (value) {
+    console.log("The user wants to play alone");
+    socket.emit("playerWantsToPlayAlone", room)  
   }
-//   swal("Do you really want to play a typing game by your self?")
-// .then((value) => {
-//   console.log("The user wants to play alone");
-//   socket.emit("playerWantsToPlayAlone", room)
-// });
+});
 });
 
 function getCookie(cname) {

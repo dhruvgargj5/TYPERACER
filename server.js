@@ -164,8 +164,8 @@ io.on('connection', function(socket){
         var players = games[room].players
         io.emit('unlockRoom', room)
         games[room].isOpen = true;
-        if(Object.keys(players).length == 1){
-          console.log("Refresh ALONE PLAYER")
+        if(Object.keys(players).length == 1 && games[room]["players"][Object.keys(players)[0]].isReady){
+          console.log("ALONE PLAYER")
           socket.to(room).emit("alonePlayer")
         }
         else if (checkReady(room) && Object.keys(players).length > 1) {
@@ -235,7 +235,7 @@ function readyUp(socket, usernameAndRoom) {
   // checks if everyone is ready
   var players = games[room].players
   if(Object.keys(players).length == 1){
-    io.emit("alonePlayer")
+    io.in(room).emit("alonePlayer")
   }
   else if (checkReady(room)) {
     games[room]["hasStarted"] = true;
