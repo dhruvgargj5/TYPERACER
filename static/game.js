@@ -97,6 +97,10 @@ socket.on("showEndGameBoard", function(players){
     p++
   }
   console.log("showEndGameBoard")
+  $('#gameEndLeaderboard').modal({
+    backdrop: 'static',
+    keyboard: false  // to prevent closing with Esc button (if you want this too)
+})
   $('#gameEndLeaderboard').modal('show');
 })
 socket.on("lockRoom", function(roomID){
@@ -311,9 +315,6 @@ var typingPage = `<body>
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <table class="table table-striped table-hover">
@@ -331,7 +332,7 @@ var typingPage = `<body>
       </div>
       <div class="modal-footer">
 
-        <button type="button" class="btn btn-primary">Return to home page</button>
+        <button type="button" class="btn btn-primary" onClick = "returnToHomePage()">Return to home page</button>
       </div>
     </div>
   </div>
@@ -453,6 +454,10 @@ function loadDisplay(){
   script.setAttribute("type", "text/javascript");
   script.setAttribute("src", "static/display.js");
   document.getElementsByTagName("head")[0].appendChild(script);
+}
+
+function returnToHomePage(){
+  location.reload()
 }
 
 
