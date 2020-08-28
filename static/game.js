@@ -257,6 +257,10 @@ socket.on("alonePlayer", function(){
 function playAlone(){
   socket.emit("playerWantsToPlayAlone", room)
   socket.emit("emitLockRoom", room)
+  var pAloneButton = document.getElementById("playAloneButton")
+  if(pAloneButton != null){
+    pAloneButton.remove()
+  }
 }
 function getCookie(cname) {
   var name = cname + "=";
