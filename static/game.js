@@ -207,6 +207,11 @@ socket.on('onConnection', function(games) {
       }
     }
   }
+  var pAloneButton = document.getElementById("playAloneButton")
+  if(pAloneButton != null){
+    pAloneButton.remove()
+  }
+});
 
   socket.on('updateProgressBars', function (players) {
     for (var id in players) {
@@ -217,7 +222,6 @@ socket.on('onConnection', function(games) {
       }
     }
   })
-});
 
 socket.on("alonePlayer", function(){
    console.log('received alone player')
@@ -235,10 +239,21 @@ socket.on("alonePlayer", function(){
   else{
     //player doesnt want to play, so we unlock the room
     socket.emit("emitUnlockroom", room)
+    var nameSpace = document.getElementById("nameSpace")
+    var playAloneButton = document.createElement("BUTTON")
+    playAloneButton.setAttribute("id", "playAloneButton")
+    playAloneButton.setAttribute("type", "button")
+    playAloneButton.setAttribute("class", "btn btn-primary")
+    playAloneButton.setAttribute("onClick", "playAlone()")
+    playAloneButton.innerHTML = "Play Alone"
+    nameSpace.appendChild(playAloneButton)
   }
 });
 });
-
+function playAlone(){
+  socket.emit("playerWantsToPlayAlone", room)
+  socket.emit("emitLockRoom", room)
+}
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);

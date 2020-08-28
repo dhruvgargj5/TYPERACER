@@ -137,6 +137,9 @@ io.on('connection', function(socket){
   socket.on("emitUnlockroom", function(room){
     io.emit('unlockRoom', room)
   });
+  socket.on("emitLockRoom", function(room){
+    io.emit("lockRoom", room)
+  })
   socket.on("gameIsOver", function(room){
     if(!games[room].isGameDone){
       gameFinish(room)
