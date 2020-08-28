@@ -134,7 +134,9 @@ io.on('connection', function(socket){
       gameFinish(room)
     }
   })
-
+  socket.on("emitUnlockroom", function(room){
+    io.emit('unlockRoom', room)
+  });
   socket.on("gameIsOver", function(room){
     if(!games[room].isGameDone){
       gameFinish(room)
@@ -167,6 +169,7 @@ io.on('connection', function(socket){
         if(Object.keys(players).length == 1 && games[room]["players"][Object.keys(players)[0]].isReady){
           console.log("ALONE PLAYER")
           socket.to(room).emit("alonePlayer")
+          io.emit('lockRoom', room)
         }
         else if (checkReady(room) && Object.keys(players).length > 1) {
           games[room]["hasStarted"] = true;
@@ -236,6 +239,7 @@ function readyUp(socket, usernameAndRoom) {
   var players = games[room].players
   if(Object.keys(players).length == 1){
     io.in(room).emit("alonePlayer")
+    io.emit('lockRoom', room)
   }
   else if (checkReady(room)) {
     games[room]["hasStarted"] = true;

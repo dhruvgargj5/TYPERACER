@@ -226,7 +226,11 @@ socket.on("alonePlayer", function(){
 .then((value) => {
   if (value) {
     console.log("The user wants to play alone");
-    socket.emit("playerWantsToPlayAlone", room)  
+    socket.emit("playerWantsToPlayAlone", room)
+  }
+  else{
+    //player doesnt want to play, so we unlock the room
+    socket.emit("emitUnlockroom", room)
   }
 });
 });
