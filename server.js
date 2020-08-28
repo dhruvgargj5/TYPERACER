@@ -32,6 +32,7 @@ io.on('connection', function(socket){
     io.in(roomCode).emit('createProgressBar', playerInfo)
   })
   socket.on("playerJoinedRoom", function(roomID){
+    io.to(roomID).emit("deleteAloneButton")
     //DO LATER check if roomID is in games, if not then it adds it
     //initialize games[roomID]['hasStarted'] = false
     //add player (socket.id) to games[roomID]["players"]

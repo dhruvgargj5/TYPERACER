@@ -18,6 +18,7 @@ function joinRoom(roomID){
   document.cookie = "room="+roomID
   room = roomID
   loadDisplay()
+
 }
 
 function readyBttnClick() {
@@ -157,6 +158,13 @@ socket.on('playerTableUpdate', function(game){
   }
 })
 
+socket.on("deleteAloneButton", function(){
+  var pAloneButton = document.getElementById("playAloneButton")
+  if(pAloneButton != null){
+    pAloneButton.remove()
+  }
+})
+
 socket.on('createProgressBar', function(playerInfo) {
   console.log("create prog bar received")
   var id = playerInfo[0]
@@ -206,10 +214,6 @@ socket.on('onConnection', function(games) {
         roomButton.setAttribute('disabled', true)
       }
     }
-  }
-  var pAloneButton = document.getElementById("playAloneButton")
-  if(pAloneButton != null){
-    pAloneButton.remove()
   }
 });
 
