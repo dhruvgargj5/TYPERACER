@@ -53,16 +53,3 @@ if __name__ == "__main__":
                         passage = passage + ". " + line
                     j += 1
     passageFile.close()
-  # search_url = base_url + "/search"
-  # data = {'q': song_title}
-  # response = requests.get(search_url, params=data, headers=headers)
-  # json = response.json()
-  # song_info = None
-  # for hit in json["response"]["hits"]:
-  #   if hit["result"]["primary_artist"]["name"] == artist_name:
-  #     song_info = hit
-  #     break
-  # if song_info:
-  #   song_api_path = song_info["result"]["api_path"]
-  #   lyrics = lyrics_from_song_api_path(song_api_path)
-  #   print(lyrics)
