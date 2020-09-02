@@ -301,8 +301,8 @@ function getCookie(cname) {
 }
 
 var typingPage = `<body>
-  <div class = "container mt-1">
-    <img src = "logos/TypeRunner_Main_Logo.svg" alt = "TypeRunner" style = "height: 415px; width: 415px;">
+  <div class = "container">
+    <img src = "logos/TypeRunner_Main_LogoTypingPage.svg" alt = "TypeRunner" style = "height: 200px; width: 415px;">
   <br/>
 
 
