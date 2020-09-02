@@ -61,7 +61,7 @@ io.on('connection', function(socket){
       isReady : false,
       wpm : 0,
       accuracy : 0,
-      timeFinish : -1,
+      timeFinish : 1000000,
       isDone : false
     };
     games[roomID].colorCounter = (games[roomID].colorCounter + 1) % 4;

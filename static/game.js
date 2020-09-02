@@ -86,9 +86,19 @@ socket.on("showEndGameBoard", function(players){
       name.innerHTML = player.name
     }
     var time = document.createElement("TD")
-    time.innerHTML = String(player.timeFinish) + " seconds"
+    if(player.timeFinish == 1000000){
+      time.innerHTML = "-"
+    }
+    else{
+      time.innerHTML = String(player.timeFinish) + " seconds"
+    }
     var wpm = document.createElement("TD")
-    wpm.innerHTML = String(player.WPM)
+    if(player.WPM == 0){
+      wpm.innerHTML = "-"
+    }
+    else{
+      wpm.innerHTML = String(player.WPM)
+    }
     tr.appendChild(place)
     tr.appendChild(name)
     tr.appendChild(time)
