@@ -306,7 +306,26 @@ function getCookie(cname) {
 
 var typingPage = `<body>
   <div class = "container">
-    <img src = "logos/TypeRunner_Main_LogoTypingPage.svg" alt = "TypeRunner" style = "height: 200px; width: 415px;">
+    <div class = "row">
+      <div class = "col-9">
+      <img src = "logos/TypeRunner_Main_LogoTypingPage.svg" alt = "TypeRunner" style = "height: 200px; width: 415px;">
+      </div>
+      <div class = "col-3">
+      <div id = "gameInfo">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col" class = "text-center">Name</th>
+              <th scope="col" class = "text-center">Game Status</th>
+              <th scope="col" class = "text-center">WPM</th>
+            </tr>
+          </thead>
+          <tbody id = "playerInfo">
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </div>
   <br/>
 
 
@@ -341,19 +360,6 @@ var typingPage = `<body>
     </div>
     </div>
   <div class = "col-md-3">
-    <div id = "gameInfo">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Game Status</th>
-            <th scope="col">WPM</th>
-          </tr>
-        </thead>
-        <tbody id = "playerInfo">
-        </tbody>
-      </table>
-    </div>
     <div id = "startTimer">
     </div>
   </div>
