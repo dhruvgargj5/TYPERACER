@@ -38,9 +38,9 @@ function readyBttnClick() {
     errormessage.innerHTML = "Looks good!"
     readyUp.remove()
     namein.remove()
-    var message = document.createElement("H5")
-    message.innerHTML = "Type fast " + username
-    document.getElementById("nameSpace").appendChild(message)
+    // var message = document.createElement("H5")
+    // message.innerHTML = "Type fast " + username
+    //document.getElementById("nameSpace").appendChild(message)
     usernameAndRoom = [username, room]
     socket.emit("playerReady", usernameAndRoom)
   }
@@ -279,7 +279,7 @@ function getCookie(cname) {
 
 var typingPage = `<body>
   <div class = "container mt-1">
-    <img src = "logos/TypeRunner_Main_Logo.png" alt = "TypeRunner" style = "height: 202px; width: 415px;">
+    <img src = "logos/TypeRunner_Main_Logo.svg" alt = "TypeRunner" style = "height: 415px; width: 415px;">
   <br/>
 
 
