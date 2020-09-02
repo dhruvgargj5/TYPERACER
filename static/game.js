@@ -233,7 +233,10 @@ socket.on("alonePlayer", function(){
   //   //player wants to play alone
   //   socket.emit("playerWantsToPlayAlone", room)
   // }
-  swal("Do you really want to play a typing game by your self?")
+  swal("Do you really want to play a typing game by your self?", {
+     buttons: ["No", "Yes"],
+  })
+
 .then((value) => {
   if (value) {
     console.log("The user wants to play alone");
@@ -246,7 +249,7 @@ socket.on("alonePlayer", function(){
     var playAloneButton = document.createElement("BUTTON")
     playAloneButton.setAttribute("id", "playAloneButton")
     playAloneButton.setAttribute("type", "button")
-    playAloneButton.setAttribute("class", "btn btn-primary")
+    playAloneButton.setAttribute("class", "btn btn-success")
     playAloneButton.setAttribute("onClick", "playAlone()")
     playAloneButton.innerHTML = "Play Alone"
     nameSpace.appendChild(playAloneButton)
