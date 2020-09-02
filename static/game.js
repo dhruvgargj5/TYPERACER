@@ -99,7 +99,7 @@ socket.on("showEndGameBoard", function(players){
       time.innerHTML = String(player.timeFinish) + " seconds"
     }
     var wpm = document.createElement("TD")
-    if(player.wpm > 100000){
+    if(player.wpm == 1000000){
       wpm.innerHTML = "-"
     }
     else{

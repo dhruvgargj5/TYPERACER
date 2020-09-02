@@ -18,7 +18,9 @@ def lyrics_from_song_url(page_url):
     [h.extract() for h in html('script')]
     #at least Genius is nice and has a tag called 'lyrics'!
     lyrics = html.find("div", class_="lyrics").get_text()
-    return lyrics
+    title = html.find("h1", class_="header_with_cover_art-primary_info-title").get_text()
+    artist = html.find("a", class_="header_with_cover_art-primary_info-primary_artist").get_text()
+    return lyrics, title, artist
 
 def getPageURLs():
     top_charts_url = "https://genius.com/#top-songs"
@@ -32,8 +34,9 @@ if __name__ == "__main__":
     passageFile = open('passages.txt', 'w')
     passages = []
     i = 0;
+    profanity.set_censor_characters("*")
     for song in songLinks:
-        lyrics = lyrics_from_song_url(song['href'])
+        lyrics, title, artist = lyrics_from_song_url(song['href'])
         j = 0;
         passage = ""
         for line in lyrics.split('\n'):
@@ -42,6 +45,7 @@ if __name__ == "__main__":
                 passage += "\n"
                 #write to file
                 passageFile.write(passage)
+                passageFile.write(title + "\n" + artist + "\n")
                 passage = ""
                 j = 0
             if line and line[0] != "[":
