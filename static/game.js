@@ -88,7 +88,6 @@ socket.on("showEndGameBoard", function(players){
     var time = document.createElement("TD")
     time.innerHTML = String(player.timeFinish) + " seconds"
     var wpm = document.createElement("TD")
-    console.log("WPM: " + String(player.WPM))
     wpm.innerHTML = String(player.WPM)
     tr.appendChild(place)
     tr.appendChild(name)
@@ -280,7 +279,7 @@ function getCookie(cname) {
 
 var typingPage = `<body>
   <div class = "container mt-1">
-    <h1>TypeRacer</h1>
+    <img src = "logos/TypeRunner_Main_Logo.png" alt = "TypeRunner" style = "height: 202px; width: 415px;">
   <br/>
 
 
@@ -312,7 +311,7 @@ var typingPage = `<body>
         </div>
     <br/>
     <div class="row col-3">
-    <p id="wpm">wpm: </p>
+    <p id="wpm">wpm</p>
     </div>
     </div>
   <div class = "col-md-3">
@@ -340,7 +339,7 @@ var typingPage = `<body>
         <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
       </div>
       <div class="modal-body">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th scope="col">Place</th>
@@ -355,7 +354,7 @@ var typingPage = `<body>
       </div>
       <div class="modal-footer">
 
-        <button type="button" class="btn btn-primary" onClick = "returnToHomePage()">Return to home page</button>
+        <button type="button" class="btn btn-success" onClick = "returnToHomePage()">Return to home page</button>
       </div>
     </div>
   </div>

@@ -10,6 +10,7 @@ var colors = ["danger", "success", "primary", "warning"]
 
 app.set('port', 5000);
 app.use('/static', express.static('./static/'));
+app.use('/logos', express.static('./logos/'));
 
 // Routing
 app.get('/', function(request, response) {

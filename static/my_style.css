@@ -14,6 +14,7 @@ body {
   font-family: sans-serif;
   display: grid;
   height: 100vh;
+  background-color : #FFEFAD;
   place-items: center;
 }
 
@@ -73,4 +74,11 @@ body {
 .pbar{
   padding-left : 0px;
   padding-right : 0px;
+}
+
+
+.btn-success{
+  background-color: #00509D !important;
+  border-color: #00509D !important;
+  color : white !important;
 }

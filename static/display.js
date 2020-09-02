@@ -127,10 +127,10 @@ function update_wpm() {
   let time = timePassed / 60;
   wpm = Math.floor(words / time);
   if (correctCounter >= 10 && correctCounter % 3 == 0) {
-      document.getElementById("wpm").innerHTML = "wpm: " + String(wpm);
+      document.getElementById("wpm").innerHTML = String(wpm) + " wpm";
   }
   if (correctCounter == correct_text.length) {
-    document.getElementById("wpm").innerHTML = "wpm: " + String(wpm);
+    document.getElementById("wpm").innerHTML = String(wpm) + " wpm";
   }
 }
 
