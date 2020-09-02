@@ -68,6 +68,12 @@ socket.on("showEndGameBoard", function(players){
     if (p1.timeFinish > p2.timeFinish) {
       return 1;
     }
+    if (p1.wpm > p2.wpm) {
+      return -1;
+    }
+    if (p1.wpm < p2.wpm) {
+      return 1;
+    }
     return 0
   })
   console.log(JSON.stringify(playerArr))
@@ -93,11 +99,11 @@ socket.on("showEndGameBoard", function(players){
       time.innerHTML = String(player.timeFinish) + " seconds"
     }
     var wpm = document.createElement("TD")
-    if(player.WPM == 0){
+    if(player.wpm > 100000){
       wpm.innerHTML = "-"
     }
     else{
-      wpm.innerHTML = String(player.WPM)
+      wpm.innerHTML = String(player.wpm)
     }
     tr.appendChild(place)
     tr.appendChild(name)
@@ -237,8 +243,6 @@ socket.on('onConnection', function(games) {
       if (players.hasOwnProperty(id)) {
         var wpmElt = document.getElementById(id + "-td3")
         wpmElt.innerHTML = String(players[id].wpm)
-        console.log(String(players[id].wpm))
-        console.log(wpmElt)
         var player_progress_bar = document.getElementById(id)
         var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
         player_progress_bar.setAttribute("style", progressBarStyle)
