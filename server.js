@@ -103,10 +103,12 @@ io.on('connection', function(socket){
     //console.log(roomCode)
     var playerProgress = progressAndRoomCode[0]
     var roomCode = progressAndRoomCode[1]
+    var wpm = progressAndRoomCode[2]
     var player = games[roomCode]["players"][socket.id];
     //console.log("socketID: " + socket.id)
     //console.log(roomCode)
     player.player_progress = playerProgress.progress;
+    player.wpm = wpm
   });
   socket.on("playerWantsToPlayAlone", function(room){
     games[room]["hasStarted"] = true;

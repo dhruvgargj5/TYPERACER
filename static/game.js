@@ -130,23 +130,29 @@ socket.on('playerTableUpdate', function(game){
       var playerTable = document.getElementById("playerInfo")
       var td1ID = id + "-td1"
       var td2ID = id + "-td2"
+      var td3ID = id + "-td3"
 
       if(document.getElementById(trID) == null){
         var tr = document.createElement("TR")
         tr.setAttribute("id", trID)
         var td1 = document.createElement("TD")
         var td2 = document.createElement("TD")
+        var td3 = document.createElement("TD")
         td1.setAttribute("id",td1ID)
         td2.setAttribute("id",td2ID)
+        td3.setAttribute("id",td3ID)
         tr.appendChild(td1)
         tr.appendChild(td2)
+        tr.appendChild(td3)
         playerTable.appendChild(tr)
       }
       else{
         var td1 = document.getElementById(td1ID)
         var td2 = document.getElementById(td2ID)
+        var td3 = document.getElementById(td3ID)
       }
       td1.innerHTML = players[id].name
+      td3.innerHTML = players[id].wpm
       if(players[id].isReady == false){
         td2.innerHTML = "Not ready"
       }
@@ -219,6 +225,10 @@ socket.on('onConnection', function(games) {
   socket.on('updateProgressBars', function (players) {
     for (var id in players) {
       if (players.hasOwnProperty(id)) {
+        var wpmElt = document.getElementById(id + "-td3")
+        wpmElt.innerHTML = String(players[id].wpm)
+        console.log(String(players[id].wpm))
+        console.log(wpmElt)
         var player_progress_bar = document.getElementById(id)
         var progressBarStyle = "width: " + String(players[id].player_progress) + "%"
         player_progress_bar.setAttribute("style", progressBarStyle)
@@ -320,6 +330,7 @@ var typingPage = `<body>
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Game Status</th>
+            <th scope="col">WPM</th>
           </tr>
         </thead>
         <tbody id = "playerInfo">
@@ -437,7 +448,7 @@ socket.on("gameStart", function (){
       progress: getProgress()
     }
     //emits the progess 60x/second
-    var progressAndRoomCode = [my_progress, room]
+    var progressAndRoomCode = [my_progress, room, wpm]
     socket.emit('progressUpdate', progressAndRoomCode);
   }, 1000 / 60);
 });
