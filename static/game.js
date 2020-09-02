@@ -40,7 +40,7 @@ function readyBttnClick() {
     namein.remove()
     // var message = document.createElement("H5")
     // message.innerHTML = "Type fast " + username
-    //document.getElementById("nameSpace").appendChild(message)
+    // document.getElementById("nameSpace").appendChild(message)
     usernameAndRoom = [username, room]
     socket.emit("playerReady", usernameAndRoom)
   }
@@ -300,8 +300,7 @@ var typingPage = `<body>
       </div>
       <p id = "correct_text" class = "alert alert-info">I love u of m</p>
         <div class="row">
-          <label for="in" class="col-md-2 col-form-label" >Type Here: </label>
-            <div class="input-group-prepend col-md-9">
+            <div class="input-group-prepend col-md-11">
               <input type="text" id="in" class="form-control" readonly = true placeholder="you better type fast!"/>
             </div>
         <div class = "col-md-1">
