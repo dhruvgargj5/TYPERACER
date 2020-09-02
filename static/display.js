@@ -155,7 +155,7 @@ const COLOR_CODES = {
   }
 };
 
-const TIME_LIMIT = 60;
+const TIME_LIMIT = 3;
 let timePassed = 0;
 let timeLeft = TIME_LIMIT;
 let timerInterval = null;
