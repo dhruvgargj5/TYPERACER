@@ -308,7 +308,7 @@ var typingPage = `<body>
   <div class = "container">
     <div class = "row">
       <div class = "col-9">
-      <img src = "logos/TypeRunner_Main_LogoTypingPage.svg" alt = "TypeRunner" style = "height: 200px; width: 415px;">
+        <img src = "logos/TypeRunner_Main_LogoTypingPage.svg" alt = "TypeRunner" style = "height: 200px; width: 415px;">
       </div>
       <div class = "col-3">
       <div id = "gameInfo">
@@ -356,7 +356,6 @@ var typingPage = `<body>
         </div>
     <br/>
     <div class="row col-3">
-    <p id="wpm">wpm</p>
     </div>
     </div>
   <div class = "col-md-3">
@@ -369,7 +368,7 @@ var typingPage = `<body>
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="gameEndLeaderboardTitle">Finishing Stats</h5>
+        <h5 class="modal-title" id="gameEndLeaderboardTitle"><strong>Finishing Stats</strong></h5>
       </div>
       <div class="modal-body">
         <table class="table table-striped">
@@ -384,9 +383,15 @@ var typingPage = `<body>
           <tbody id = "endGameInfo">
           </tbody>
         </table>
+        <div class = "row">
+        <div class = "col-12">
+          <div id = "songInfoDiv">
+            <p id = "songInfo" class = "alert alert-info"></p>
+          </div>
+        </div>
+        </div>
       </div>
       <div class="modal-footer">
-
         <button type="button" class="btn btn-success" onClick = "returnToHomePage()">Return to home page</button>
       </div>
     </div>
@@ -471,6 +476,8 @@ socket.on("gameStart", function (){
       progress: getProgress()
     }
     //emits the progess 60x/second
+    // make sure progressUpdate only emits while the game is active. once the game
+    //is over, stop emitting it. players might leave while its still being emitted
     var progressAndRoomCode = [my_progress, room, wpm]
     socket.emit('progressUpdate', progressAndRoomCode);
   }, 1000 / 60);

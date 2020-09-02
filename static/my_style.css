@@ -95,3 +95,9 @@ body {
 .swal-overlay {
   background-color: rgba(0, 80, 157, 0.45);
 }
+
+.alert-info{
+  background-color: #C2E1FF !important;
+  border-color: #C2E1FF !important;
+  color : black !important; 
+}
