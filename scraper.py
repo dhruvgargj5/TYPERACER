@@ -1,8 +1,10 @@
 import requests
+import boto3
 from bs4 import BeautifulSoup
 from profanity import profanity
 from langdetect import detect_langs
 from langdetect import detect
+from botocore.client import Config
 
 base_url = "http://api.genius.com"
 access_token = "Kour0xvL9idf21Cl8IKOPg3emxL3hcv0jf35noI_VrsE1OAhEWLHfN0ejPfeo860"
@@ -57,3 +59,17 @@ if __name__ == "__main__":
                         passage = passage + ". " + line
                     j += 1
     passageFile.close()
+
+    ACCESS_KEY_ID = 'AKIA224QDIV7CNGJFEI4'
+    ACCESS_SECRET_KEY = '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'
+    BUCKET_NAME = 'typerunnerpassages'
+
+    data = open('passages.txt', 'rb')
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=ACCESS_KEY_ID,
+        aws_secret_access_key=ACCESS_SECRET_KEY,
+        config=Config(signature_version='s3v4')
+    )
+    s3.Bucket(BUCKET_NAME).put_object(Key='passages.txt', Body=data)

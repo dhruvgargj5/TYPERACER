@@ -7,6 +7,7 @@ var server = http.Server(app);
 var io = socketIO(server);
 var games = {}
 var colors = ["danger", "success", "primary", "warning"]
+var AWS = require('aws-sdk')
 
 app.set('port', 5000);
 app.use('/static', express.static('./static/'));
@@ -24,6 +25,7 @@ server.listen(5000, function() {
 
 io.on('connection', function(socket){
   io.emit('onConnection', games)
+  getPassages()
   socket.on('playerReady', function(usernameAndRoom){
     //console.log("player ready received from game")
     readyUp(socket, usernameAndRoom)
@@ -255,6 +257,25 @@ function readyUp(socket, usernameAndRoom) {
     io.emit('lockRoom', room)
     console.log("lockRoom 291")
   }
+}
+
+function getPassages() {
+  AWS.config.update({
+      accessKeyId: "AKIA224QDIV7CNGJFEI4",
+      secretAccessKey: "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",
+    }
+  );
+  var s3 = new AWS.S3();
+  s3.getObject({ Bucket: "typerunnerpassages", Key: "passages.txt" },
+    function (error, data) {
+      if (error != null) {
+        alert("Failed to retrieve an object: " + error);
+      } else {
+        console.log(data.Body.toString('utf-8'))
+        // do something with data.Body
+      }
+    }
+  );
 }
 
 function checkReady(room) {
