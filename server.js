@@ -261,8 +261,8 @@ function readyUp(socket, usernameAndRoom) {
 
 function getPassages() {
   AWS.config.update({
-      accessKeyId: "AKIA224QDIV7CNGJFEI4",
-      secretAccessKey: "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",
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
     }
   );
   var s3 = new AWS.S3();

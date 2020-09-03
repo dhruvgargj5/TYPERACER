@@ -1,5 +1,6 @@
 import requests
 import boto3
+import os
 from bs4 import BeautifulSoup
 from profanity import profanity
 from langdetect import detect_langs
@@ -60,8 +61,8 @@ if __name__ == "__main__":
                     j += 1
     passageFile.close()
 
-    ACCESS_KEY_ID = 'AKIA224QDIV7CNGJFEI4'
-    ACCESS_SECRET_KEY = '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'
+    ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY']
+    ACCESS_SECRET_KEY = os.environ['AWS_SECRET_KEY']
     BUCKET_NAME = 'typerunnerpassages'
 
     data = open('passages.txt', 'rb')
