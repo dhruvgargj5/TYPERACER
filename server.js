@@ -169,10 +169,12 @@ io.on('connection', function(socket){
     var self = this;
     var room = Object.keys(self.rooms)[1];
     var idAndRoomCode = [socket.id, room]
-    if(Object.keys(games[room]["players"]).length == 1){
-      games[room]["passageInfo"]["passage"] = ""
-      games[room]["passageInfo"]["artist"] = ""
-      games[room]["passageInfo"]["title"] = ""
+    if (games.hasOwnProperty(room)) {
+      if(Object.keys(games[room]["players"]).length == 1){
+        games[room]["passageInfo"]["passage"] = ""
+        games[room]["passageInfo"]["artist"] = ""
+        games[room]["passageInfo"]["title"] = ""
+      }
     }
     if(games.hasOwnProperty(room)){
       socket.to(room).emit("deletePlayerInTable",idAndRoomCode)

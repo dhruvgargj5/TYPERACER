@@ -343,7 +343,7 @@ var typingPage = `<body>
     <div class = "flex-md-column col-md-9">
       <div id="progress_bars" class="row" >
       </div>
-      <p id = "correct_text" class = "alert alert-info">I love u of m</p>
+      <p id = "correct_text" class = "alert alert-info"></p>
         <div class="row">
             <div class="input-group-prepend col-md-11">
               <input type="text" id="in" class="form-control" readonly = true placeholder="you better type fast!"/>
