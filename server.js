@@ -166,13 +166,14 @@ io.on('connection', function(socket){
     }
   })
   socket.on('disconnecting', function(){
-//     window.onbeforeunload = function(e) {
-//   return 'Dialog text here.';
-// };
-    //console.log(JSON.stringify(games, undefined, 4))
     var self = this;
     var room = Object.keys(self.rooms)[1];
     var idAndRoomCode = [socket.id, room]
+    if(Object.keys(games[room]["players"]).length == 1){
+      games[room]["passageInfo"]["passage"] = ""
+      games[room]["passageInfo"]["artist"] = ""
+      games[room]["passageInfo"]["title"] = ""
+    }
     if(games.hasOwnProperty(room)){
       socket.to(room).emit("deletePlayerInTable",idAndRoomCode)
       //players might not be in the room, do a check here

@@ -17,9 +17,7 @@ function joinRoom(roomID){
   document.cookie = "room="+roomID
   room = roomID
   loadDisplay()
-  setTimeout(function(){ alert("Hello"); }, 10000);
-  console.log("puase ")
-  socket.emit("playerJoinedRoom", roomID)
+   setTimeout(function(){ socket.emit("playerJoinedRoom", roomID)}, 250);
 }
 
 function readyBttnClick() {
@@ -386,8 +384,12 @@ var typingPage = `<body>
         </table>
         <div class = "row">
         <div class = "col-12">
-          <div id = "songInfoDiv">
-            <p id = "songInfo" class = "alert alert-info"></p>
+          <div id = "songInfoDiv" class = "alert alert-info">
+            <p id = "songInfo"></p>
+            <br>
+            <p id = "songTitle"></p>
+            <br>
+            <p id = "songArtist"></p>
           </div>
         </div>
         </div>
@@ -439,9 +441,16 @@ socket.on('loadPassage', function(game){
   setPassage()
   console.log("PASSAGE" + passage)
   var songInfo = document.getElementById("songInfo")
-  songInfo.innerHTML = "You just typed a Genius Top 10 Song!" + "\n" +
-                        "🎵Song Name: " + title + "\n" +
-                        "🎤Artists: " + artist;
+  var message = "You just typed a Genius Top 10 Song!"
+  songInfo.innerHTML = message
+
+  var songNameInfo = document.getElementById("songTitle")
+  var songName = "🎵"+ title
+  songNameInfo.innerHTML = songName
+
+  var songArtists = document.getElementById("songArtist")
+  var songArtist = "🎤" + artist;
+  songArtists.innerHTML = songArtist
 
 })
 
