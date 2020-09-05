@@ -6,6 +6,7 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 var games = {}
+var passages = ""
 var colors = ["danger", "success", "primary", "warning"]
 var AWS = require('aws-sdk')
 
@@ -27,7 +28,6 @@ io.on('connection', function(socket){
   io.emit('onConnection', games)
   getPassages()
   socket.on('playerReady', function(usernameAndRoom){
-    //console.log("player ready received from game")
     readyUp(socket, usernameAndRoom)
     var roomCode = usernameAndRoom[1]
     updatePlayerTable(roomCode)
@@ -43,6 +43,7 @@ io.on('connection', function(socket){
     //on the client side this will just disable the "join room" button
     //actually add them to the room with socket.join(roomID)
     //emit games[roomID] back to the whole room so the client can update the html side
+
     if(!games.hasOwnProperty(roomID)){
       games[roomID] = {
                 'isOpen' : true,
@@ -50,10 +51,23 @@ io.on('connection', function(socket){
                 'isGameDone' : false,
                 'colors' : ["danger", "success", "primary", "warning"],
                 'colorCounter' : 0,
+                'passageInfo' : {
+                  'passage' : "",
+                  'artist' : "",
+                  'title' : ""
+                },
                 'players' : {}
               };
     }
+
     var players = games[roomID]['players']
+    //the incoming player is the first one, so now the passage is plucked
+    if(Object.keys(players).length == 0 && games[roomID]["passageInfo"]["passage"] == ""){
+        var passageInfo = getPassage()
+        games[roomID]["passageInfo"]["passage"] = passageInfo[0]
+        games[roomID]["passageInfo"]["title"] = passageInfo[1]
+        games[roomID]["passageInfo"]["artist"] = passageInfo[2]
+    }
     //console.log("socket.id: " + socket.id)
     players[socket.id] = {
       name : "Anonymous Racer",
@@ -76,10 +90,10 @@ io.on('connection', function(socket){
       //to 'roomID'
       games[roomID]['isOpen'] = false;
       io.emit('lockRoom', roomID)
-      console.log("lock Room 78")
     }
     socket.join(roomID)
-    io.in(roomID).emit('playerTableUpdate',games[roomID])
+    io.in(roomID).emit('playerTableUpdate', games[roomID])
+    io.in(roomID).emit('loadPassage', games[roomID])
     //update progress bar here by emitting 'createProgressBar'
     for (var id in players){
       if (players.hasOwnProperty(id)){
@@ -127,7 +141,7 @@ io.on('connection', function(socket){
     var player = players[socket.id]
     player.isDone = true;
     player.timeFinish = time;
-    player.WPM = wpm;
+    player.wpm = wpm;
     var allDone = true
     for (var id in players){
       if (players.hasOwnProperty(id)){
@@ -258,6 +272,12 @@ function readyUp(socket, usernameAndRoom) {
     console.log("lockRoom 291")
   }
 }
+function getPassage() {
+  var passageArr = passages.split("\n")
+  var numLines = passageArr.length / 3
+  var passIndex = Math.floor(Math.random() * numLines);
+  return [passageArr[passIndex*3], passageArr[(passIndex*3)+1], passageArr[(passIndex*3)+2]]
+}
 
 function getPassages() {
   AWS.config.update({
@@ -271,7 +291,7 @@ function getPassages() {
       if (error != null) {
         alert("Failed to retrieve an object: " + error);
       } else {
-        console.log(data.Body.toString('utf-8'))
+        passages = data.Body.toString('utf-8')
         // do something with data.Body
       }
     }

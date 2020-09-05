@@ -6,13 +6,12 @@ var incorrectCounter = 0;
 var input_text = "";
 //var startedTimer = false;
 //var correct_text = "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense."
-var correct_text = "I love u of m"
+var correct_text = ""
 var isWin = false;
 var isOver = false;
 
 var progress = 0;
 var wpm = 0;
-
 console.log("display has been loaded in")
 
 //document.addEventListener("DOMContentLoaded", init);
@@ -27,6 +26,7 @@ function init() {
     see Google Doc for explanation
   */
 }
+
 
 function backspace(event)
 {
@@ -71,6 +71,10 @@ function type(event) {
 
 function updateProgress() {
   progress = (correctCounter / correct_text.length) * 100;
+}
+
+function setPassage() {
+  correct_text = getCookie("passage")
 }
 
 function getProgress() {

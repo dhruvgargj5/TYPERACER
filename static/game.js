@@ -11,14 +11,15 @@ function playerFinish(){
   socket.emit("playerFinished", roomAndTimePassed)
 }
 function joinRoom(roomID){
-  socket.emit("playerJoinedRoom", roomID)
   //open typingPage.HTML
   document.body.innerHTML = ""
   document.body.innerHTML = typingPage
   document.cookie = "room="+roomID
   room = roomID
   loadDisplay()
-
+  setTimeout(function(){ alert("Hello"); }, 10000);
+  console.log("puase ")
+  socket.emit("playerJoinedRoom", roomID)
 }
 
 function readyBttnClick() {
@@ -419,50 +420,29 @@ socket.on("deletePlayerInTable", function(idAndRoomCode){
   var trIDElement = document.getElementById(trID)
   trIDElement.remove()
 })
-//
-// socket.on('playerTableUpdate', function(game){
-//   //console.log(game)
-//   var players = game["players"]
-//   for (var id in players) {
-//     if (players.hasOwnProperty(id)) {
-//       var trID = id + "-tr"
-//       var playerTable = document.getElementById("playerInfo")
-//       var td1ID = id + "-td1"
-//       var td2ID = id + "-td2"
-//
-//       if(document.getElementById(trID) == null){
-//         var tr = document.createElement("TR")
-//         tr.setAttribute("id", trID)
-//         var td1 = document.createElement("TD")
-//         var td2 = document.createElement("TD")
-//         td1.setAttribute("id",td1ID)
-//         td2.setAttribute("id",td2ID)
-//         tr.appendChild(td1)
-//         tr.appendChild(td2)
-//         playerTable.appendChild(tr)
-//       }
-//       else{
-//         var td1 = document.getElementById(td1ID)
-//         var td2 = document.getElementById(td2ID)
-//       }
-//       td1.innerHTML = players[id].name
-//       if(players[id].isReady == false){
-//         td2.innerHTML = "Not ready"
-//       }
-//       else{
-//         td2.innerHTML = "Ready!"
-//       }
-//     }
-//   }
-// })
-//
 
-//
 socket.on('deleteProgressBar', function(id) {
   var outMostDiv = document.getElementById(id + "-omd")
   var label = document.getElementById(id + "-tag")
   label.remove()
   outMostDiv.remove()
+})
+
+socket.on('loadPassage', function(game){
+  console.log("LOAD PASSAGE")
+  var passageInfo = game["passageInfo"]
+  var passage = passageInfo["passage"]
+  var artist = passageInfo["artist"]
+  var title = passageInfo["title"]
+  document.getElementById("correct_text").innerHTML = passage;
+  document.cookie = "passage=" + passage
+  setPassage()
+  console.log("PASSAGE" + passage)
+  var songInfo = document.getElementById("songInfo")
+  songInfo.innerHTML = "You just typed a Genius Top 10 Song!" + "\n" +
+                        "🎵Song Name: " + title + "\n" +
+                        "🎤Artists: " + artist;
+
 })
 
 // //Starts the countdown (to the game) timer
