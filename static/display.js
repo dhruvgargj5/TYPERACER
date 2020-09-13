@@ -216,6 +216,7 @@ function startTimer() {
       }
       //end of game stuff
     }
+    update_wpm();
   }, 1000);
 }
 
