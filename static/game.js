@@ -17,7 +17,7 @@ function joinRoom(roomID){
   document.cookie = "room="+roomID
   room = roomID
   loadDisplay()
-   setTimeout(function(){ socket.emit("playerJoinedRoom", roomID)}, 250);
+  setTimeout(function(){ socket.emit("playerJoinedRoom", roomID)}, 250);
 }
 
 function readyBttnClick() {
@@ -329,7 +329,7 @@ var typingPage = `<body>
 
 
   <div id="nameSpace">
-    <form id="name_form" class="form-inline">
+    <form id="name_form" class="form-inline" onSubmit="return false;">
         <input type="text" id="name_in" class="form-control mr-sm-2" placeholder="Name"/>
         <button type="button" class="btn btn-danger" id = "readyButton" onclick = "readyBttnClick()">Ready</button>
         <div id="name_feedback">
