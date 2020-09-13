@@ -45,6 +45,8 @@ if __name__ == "__main__":
         for line in lyrics.split('\n'):
             if j == 4:
                 passage = profanity.censor(passage)
+                passage = passage.replace('\'','')
+                passage = passage.replace('\"','')
                 passage += "\n"
                 #write to file
                 passageFile.write(passage)
