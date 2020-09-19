@@ -16,7 +16,6 @@ body {
   height: 100vh;
   background-color : #FFF7D6;
   place-items: center;
-  overflow:hidden;
 }
 
 .base-timer {
