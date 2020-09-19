@@ -10,7 +10,7 @@ var passages = ""
 var colors = ["danger", "success", "primary", "warning"]
 var AWS = require('aws-sdk')
 
-app.set('port', 5000);
+app.set('port', 8080);
 app.use('/static', express.static('./static/'));
 app.use('/logos', express.static('./logos/'));
 
@@ -20,7 +20,7 @@ app.get('/', function(request, response) {
 });
 
 // Starts the server.
-server.listen(5000, function() {
+server.listen(8080, function() {
   console.log('Starting server on port 5000');
 });
 
