@@ -303,6 +303,7 @@ function getCookie(cname) {
   return "";
 }
 
+
 var typingPage = `<body>
   <div class = "container">
     <div class = "row">
@@ -343,7 +344,9 @@ var typingPage = `<body>
     <div class = "flex-md-column col-md-9">
       <div id="progress_bars" class="row" >
       </div>
+      <div id = "correct_text_div">
       <p id = "correct_text" class = "alert alert-info"></p>
+      </div>
         <div class="row">
             <div class="input-group-prepend col-md-11">
               <input type="text" id="in" class="form-control" readonly = true placeholder="you better type fast!"/>
@@ -476,6 +479,7 @@ socket.on("gameStart", function (){
 // //Prints
 // //Makes the client's text box NON-readonly. Client can now enter text
 function startCountdown(){
+
 //credit W3 Schools
   var curr = 0
   var x = setInterval(function() {
@@ -488,7 +492,10 @@ function startCountdown(){
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
     // Display the result in the element with id="demo"
-    document.getElementById("startTimer").innerHTML = "Start in: " + seconds + "s ";
+
+    var timer = document.getElementById("startTimer")
+    timer.setAttribute("style", "font-size:40px")
+    timer.innerHTML = "Start in: " + seconds + "s ";
     // If the count down is finished, write some text
     //start the GAME
     if (distance <= 0) {

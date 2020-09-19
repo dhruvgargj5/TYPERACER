@@ -16,6 +16,7 @@ body {
   height: 100vh;
   background-color : #FFF7D6;
   place-items: center;
+  overflow:hidden;
 }
 
 .base-timer {
@@ -99,5 +100,5 @@ body {
 .alert-info{
   background-color: #C2E1FF !important;
   border-color: #C2E1FF !important;
-  color : black !important; 
+  color : black !important;
 }
